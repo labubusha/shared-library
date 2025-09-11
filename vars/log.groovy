@@ -16,7 +16,7 @@ def aborted(CHANGE, SHELVE, BOT_TOKEN, CHAT_ID) {
     """
 }
 
-def failed(CHANGE, SHELVE, STATUS, BOT_TOKEN, CHAT_ID) {
+def fail(CHANGE, SHELVE, STATUS, BOT_TOKEN, CHAT_ID) {
     powershell """
         \$change = "${CHANGE}"
         \$shelve = "${SHELVE}"
