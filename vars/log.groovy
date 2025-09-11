@@ -2,7 +2,7 @@ def info(message) {
     echo "INFO: ${message}"
 }
 
-def aborted(change, shelve, bot_token, chat_id) {
+def aborted(CHANGE, SHELVE, BOT_TOKEN, CHAT_ID) {
     echo 'aborted!'
     powershell """
         \$change = "${CHANGE}"
