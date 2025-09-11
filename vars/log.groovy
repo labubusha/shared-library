@@ -19,7 +19,7 @@ def aborted(CHANGE, SHELVE, BOT_TOKEN, CHAT_ID) {
 //\$Response = Invoke-RestMethod -Uri "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=\$(\$message)&parse_mode=HTML"
 
 
-def failed(CHANGE, SHELVE, BOT_TOKEN, CHAT_ID) {
+def failed(CHANGE, SHELVE, STATUS, BOT_TOKEN, CHAT_ID) {
     powershell """
                     \$change = "${CHANGE}"
                     \$shelve = "${SHELVE}"
