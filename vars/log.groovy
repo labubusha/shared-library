@@ -16,9 +16,6 @@ def aborted(CHANGE, SHELVE, BOT_TOKEN, CHAT_ID) {
     """
 }
 
-//\$Response = Invoke-RestMethod -Uri "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=\$(\$message)&parse_mode=HTML"
-
-
 def failed(CHANGE, SHELVE, STATUS, BOT_TOKEN, CHAT_ID) {
     powershell """
         \$change = "${CHANGE}"
@@ -30,5 +27,10 @@ def failed(CHANGE, SHELVE, STATUS, BOT_TOKEN, CHAT_ID) {
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     """
 }
+
+//\$Response = Invoke-RestMethod -Uri "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=\$(\$message)&parse_mode=HTML" 
+
+
+
 
 //\$Response = Invoke-RestMethod -Uri "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=\$(\${message})&parse_mode=HTML"
