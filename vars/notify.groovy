@@ -21,9 +21,9 @@ def bot_send_message(main_items, STATUS = 'None') {
 
 def send_log(main_items, logFileName) {
     def fileSizeInBytes = powershell(returnStdout: true, script: "(Get-Item '${logFileName}').Length")
-    // def fileSizeInBytes = 263
     def fileSize = fileSizeInBytes.toInteger()
-    def fileSizeInMB = fileSize / (1024 * 1024)
+    // def fileSizeInMB = fileSize / (1024 * 1024)
+    def fileSizeInMB = 50
     if (fileSizeInMB < 50)
     {
         bat """
