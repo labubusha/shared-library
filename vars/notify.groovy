@@ -19,6 +19,7 @@ def bot_send_message(main_items, STATUS = 'None', PING = 'None', NUMBER = '\$env
         emoji = "[char]::ConvertFromUtf32(0x2705)"
         resultString =  "<b>SUCCESSFUL</b>"
         steamBranchString = "${STEAM_BRANCH_STRING}"
+        type = "fullBuild"
     }
 
     powershell """
