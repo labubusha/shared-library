@@ -1,14 +1,10 @@
-def bot_send_message(main_items, STATUS = 'None', PING = 'None', NUMBER = 'None', STEAM_BRANCH_STRING = 'None') {
+def bot_send_message(main_items, STATUS = 'None', PING = 'None', NUMBER = '\$env:BUILD_ID', STEAM_BRANCH_STRING = '') {
     // main_items, STATUS = 'None', PING = 'None', NUMBER = 'None', STEAM_BRANCH_STRING = 'None'
     // def main_items = args.get()
-    def currentBuild = currentBuild.result
     def helpString = ""
-    // def emoji = "[char]::ConvertFromUtf32(0x2705)"
-    // def resultString =  "<b>SUCCESSFUL</b>"
     def emoji = "[char]::ConvertFromUtf32(0x2716)"
     def resultString =  "<b>ABORTED</b>"
     def type = "\$env:JOB_BASE_NAME"
-    def steamBranchString = ""
 
     if ( STATUS != 'None' ) {
         emoji = "[char]::ConvertFromUtf32(0x274C)"
@@ -19,28 +15,20 @@ def bot_send_message(main_items, STATUS = 'None', PING = 'None', NUMBER = 'None'
          emoji = "[char]::ConvertFromUtf32(0x274C)"
          helpString = " `n`r${PING}"
          steamBranchString = "${STEAM_BRANCH_STRING}"
+    } else if ( NUMBER != '\$env:BUILD_ID') {
+        emoji = "[char]::ConvertFromUtf32(0x2705)"
+        resultString =  "<b>SUCCESSFUL</b>"
+        steamBranchString = "${STEAM_BRANCH_STRING}"
     }
-
-    // if ( STATUS == 'None' && PING == 'None' ) {
-
-    // } else if ( STATUS != 'None' ) {
-    //     emoji = "[char]::ConvertFromUtf32(0x274C)"
-    //     helpString = " `n`r<b>Failed at step</b> - ${STATUS}"
-    //     resultString = "<b>FAILURE</b>"
-    // } else if ( PING != 'None' ) {
-    //     emoji = "[char]::ConvertFromUtf32(0x274C)"
-    //     resultString = "<b>FAILURE</b>"
-    //     helpString = " `n`r${PING}"
-    // }
 
     powershell """
         \$change = "${main_items.CHANGE}"
         \$shelve = "${main_items.SHELVE}"
-        \$number = "${NUMBER}"
+        \$steambranch = "${STEAM_BRANCH_STRING}"
         echo \$shelve
         \$config = \$env:VS_CONFIG.Replace('+', '%2B')
         \$emoji = ${emoji}
-        \$message = "\$emoji\$emoji\$emoji ${resultString} \$emoji\$emoji\$emoji `n`r`n`r<b>Type</b> - ${type} `n`r<b>Platform</b> - \$env:PLATFORM `n`r<b>Target</b> - \$env:BUILD_TARGET `n`r<b>Configuration</b> - \$config `n`r<b>Branch</b> - \$env:BRANCH `n`r${steamBranchString}<b>Number</b> - \$env:BUILD_ID`n`r<b>Changelist</b> - \$change `n`r<b>SHELVE</b> - \$shelve${helpString}"
+        \$message = "\$emoji\$emoji\$emoji ${resultString} \$emoji\$emoji\$emoji `n`r`n`r<b>Type</b> - ${type} `n`r<b>Platform</b> - \$env:PLATFORM `n`r<b>Target</b> - \$env:BUILD_TARGET `n`r<b>Configuration</b> - \$config `n`r<b>Branch</b> - \$env:BRANCH `n`r\$steambranch<b>Number</b> - ${NUMBER}`n`r<b>Changelist</b> - \$change `n`r<b>SHELVE</b> - \$shelve${helpString}"
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
         \$Response = Invoke-RestMethod -Uri "https://api.telegram.org/bot${main_items.BOT_TOKEN}/sendMessage?chat_id=${main_items.CHAT_ID}&text=\$(\${message})&parse_mode=HTML"
     """
