@@ -22,8 +22,7 @@ def bot_send_message(main_items, STATUS = 'None') {
 def send_log(main_items, logFileName) {
     def fileSizeInBytes = powershell(returnStdout: true, script: "(Get-Item '${logFileName}').Length")
     def fileSize = fileSizeInBytes.toInteger()
-    // def fileSizeInMB = fileSize / (1024 * 1024)
-    def fileSizeInMB = 50
+    def fileSizeInMB = fileSize / (1024 * 1024)
     if (fileSizeInMB < 50)
     {
         bat """
@@ -37,4 +36,23 @@ def send_log(main_items, logFileName) {
             curl -X POST "https://api.telegram.org/bot${main_items.BOT_TOKEN}/sendDocument" -F chat_id=${main_items.CHAT_ID} -F document="@${logFileName}.7z"
         """
     }
+}
+
+def with_Credentials(curl_items, logFileName) {
+    bat """
+        url -m 600 -X POST https://${curl_items.user}:${curl_items.token}@${curl_items.jenkins_url}/job/${curl_items.JOB_NAME}/${curl_items.BUILD_ID}/consoleText > ${logFileName} 2>&1
+        exit /b 0
+    """
+}
+
+def send_error_message(main_items, htmlMessage) {
+    powershell """
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+        \$botToken = "${main_items.BOT_TOKEN}"
+        \$chatId = "${main_items.CHAT_ID}"
+        \$encodedMessage = [uri]::EscapeDataString('${htmlMessage}')
+        \$uri = "https://api.telegram.org/bot\$botToken/sendMessage?chat_id=\$chatId&text=\$encodedMessage&parse_mode=HTML"
+        \$Response = Invoke-RestMethod -Uri \$uri -Method Get
+        Start-Sleep -Seconds 1
+    """
 }
