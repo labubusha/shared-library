@@ -7,6 +7,11 @@ def bot_send_message(main_items, STATUS = 'None', PING = 'None', NUMBER = 'None'
     def resultString =  "<b>ABORTED</b>"
     def type = "\$env:JOB_BASE_NAME"
 
+    if ( STATUS != 'None' ) {
+        emoji = "[char]::ConvertFromUtf32(0x274C)"
+        helpString = " `n`r<b>Failed at step</b> - ${STATUS}"
+        resultString = "<b>FAILURE</b>"
+    }
     // if ( STATUS == 'None' && PING == 'None' ) {
 
     // } else if ( STATUS != 'None' ) {
