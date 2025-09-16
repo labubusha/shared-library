@@ -21,7 +21,7 @@ def bot_send_message(main_items, STATUS = 'None', PING = 'None', NUMBER = '\$env
             type = "fullBuild"
         }
 
-        if ( currentBuild.currentResult == 'ABORTED' ) {
+        if ( currentBuild.result == 'ABORTED' ) {
             emoji = "[char]::ConvertFromUtf32(0x2716)"
             ResultType =  "<b>ABORTED</b>"
         }
