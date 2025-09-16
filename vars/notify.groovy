@@ -5,7 +5,7 @@ def bot_send_message(main_items, STATUS = 'None', PING = 'None', NUMBER = '\$env
     def ResultType =  ""
     def type = "\$env:JOB_BASE_NAME"
     def ping = ""
-    currentBuild = currentBuild.currentResult
+    def currentBuild = currentBuild.currentResult
     if ( PING != 'None' ) {
         ping = " `n`r${PING}"
     }
