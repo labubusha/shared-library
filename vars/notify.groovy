@@ -6,7 +6,7 @@ def bot_send_message(main_items, STATUS = 'None', PING = 'None', NUMBER = '\$env
     def ResultType =  "<b>ABORTED</b>"
     def type = "\$env:JOB_BASE_NAME"
     if ( STATUS != 'None' ) {
-        if ( currentBuild.result == 'FAILURE' ) {
+        if ( currentBuild.currentResult == 'FAILURE' ) {
             emoji = "[char]::ConvertFromUtf32(0x274C)"
             helpString = " `n`r<b>Failed at step</b> - ${STATUS}"
             ResultType = "<b>FAILURE</b>"
@@ -14,7 +14,7 @@ def bot_send_message(main_items, STATUS = 'None', PING = 'None', NUMBER = '\$env
         }
         if ( currentBuild.result == 'SUCCESS' ) {
             emoji = "[char]::ConvertFromUtf32(0x2705)"
-            resultString =  "<b>SUCCESSFUL</b>"
+            ResultType =  "<b>SUCCESSFUL</b>"
             type = "fullBuild"
         }
     }
