@@ -5,26 +5,35 @@ def bot_send_message(main_items, STATUS = 'None', PING = 'None', NUMBER = '\$env
     def ResultType =  ""
     def type = "\$env:JOB_BASE_NAME"
     def ping = ""
+    currentBuild = currentBuild.currentResult
     if ( PING != 'None' ) {
         ping = " `n`r${PING}"
     }
     if ( STATUS != 'None' ) {
-        if ( currentBuild.currentResult == 'FAILURE' ) {
-            emoji = "[char]::ConvertFromUtf32(0x274C)"
-            helpString = " `n`r<b>Failed at step</b> - ${STATUS}"
-            ResultType = "<b>FAILURE</b>"
-            
-        }
-        if ( currentBuild.currentResult == 'SUCCESS' ) {
-            emoji = "[char]::ConvertFromUtf32(0x2705)"
-            ResultType =  "<b>SUCCESSFUL</b>"
-            type = "fullBuild"
-        }
-
-        if ( currentBuild.currentResult == 'ABORTED' ) {
-            emoji = "[char]::ConvertFromUtf32(0x2716)"
-            ResultType =  "<b>ABORTED</b>"
-        }
+        switch (currentBuild) {
+            case 'FAILURE': 
+                emoji = "[char]::ConvertFromUtf32(0x274C)"
+                helpString = " `n`r<b>Failed at step</b> - ${STATUS}"
+                ResultType = "<b>FAILURE</b>"
+                break
+            case 'SUCCESS': 
+                emoji = "[char]::ConvertFromUtf32(0x2705)"
+                ResultType =  "<b>SUCCESSFUL</b>"
+                break
+            case 'ABORTED': 
+                emoji = "[char]::ConvertFromUtf32(0x2716)"
+                ResultType =  "<b>ABORTED</b>"
+                break
+            case 'FIXED':
+                emoji = "[char]::ConvertFromUtf32(0x2705)"
+                ResultType =  "<b>FIXED</b>"
+                break
+            case 'REGRESSION': 
+                emoji = "[char]::ConvertFromUtf32(0x274C)"
+                helpString = " `n`r<b>Failed at step</b> - ${STATUS}"
+                ResultType = "<b>REGRESSION</b>"
+                break
+        }    
     }
     resultString = "\$emoji\$emoji\$emoji <b>${ResultType}</b> \$emoji\$emoji\$emoji `n`r`n`r<b>Type</b> - ${type} `n`r<b>Platform</b> - \$env:PLATFORM `n`r<b>Target</b> - \$env:BUILD_TARGET `n`r<b>Configuration</b> - \$config `n`r<b>Branch</b> - \$env:BRANCH`n`r${STEAM_BRANCH_STRING}<b>Number</b> - ${NUMBER}`n`r<b>Changelist</b> - \$change `n`r<b>SHELVE</b> - \$shelve${helpString}${ping}"
     powershell """
