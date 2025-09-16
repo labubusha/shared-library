@@ -1,5 +1,7 @@
-def test(Map args = [:], main_items) {
-    defaultValues = [STATUS: 'None', PING: 'None']
-    args = defaultValues << args
-    return "${STATUS} ${PING}"
+def call(Map args = [:], main_items) {
+    def defaultValues = [STATUS: 'None', PING: 'None']
+    def config = defaultValues << args
+    
+    echo "STATUS: ${config.STATUS}"
+    echo "PING: ${config.PING}"
 }
