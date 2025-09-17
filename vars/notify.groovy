@@ -1,19 +1,18 @@
-def bot_send_message(main_items, STATUS = 'None', PING = 'None', NUMBER = '\$env:BUILD_ID', STEAM_BRANCH_STRING = '') {
+def bot_send_message(main_items, parameters) {
     def resultString = ""
     def helpString = ""
     def emoji = ""
     def ResultType =  ""
-    def type = "\$env:JOB_BASE_NAME"
     def ping = ""
     def currentBuild = currentBuild.currentResult
-    if ( PING != 'None' ) {
-        ping = " `n`r${PING}"
+    if ( parameters.PING != 'None' ) {
+        ping = " `n`r${parameters.PING}"
     }
-    if ( STATUS != 'None' ) {
+    if ( parameters.STATUS != 'None' ) {
         switch (currentBuild) {
             case 'FAILURE': 
                 emoji = "[char]::ConvertFromUtf32(0x274C)"
-                helpString = " `n`r<b>Failed at step</b> - ${STATUS}"
+                helpString = " `n`r<b>Failed at step</b> - ${parameters.STATUS}"
                 ResultType = "<b>FAILURE</b>"
                 break
             case 'SUCCESS': 
@@ -30,12 +29,12 @@ def bot_send_message(main_items, STATUS = 'None', PING = 'None', NUMBER = '\$env
                 break
             case 'REGRESSION': 
                 emoji = "[char]::ConvertFromUtf32(0x274C)"
-                helpString = " `n`r<b>Failed at step</b> - ${STATUS}"
+                helpString = " `n`r<b>Failed at step</b> - ${parameters.STATUS}"
                 ResultType = "<b>REGRESSION</b>"
                 break
         }    
     }
-    resultString = "\$emoji\$emoji\$emoji <b>${ResultType}</b> \$emoji\$emoji\$emoji `n`r`n`r<b>Type</b> - ${type} `n`r<b>Platform</b> - \$env:PLATFORM `n`r<b>Target</b> - \$env:BUILD_TARGET `n`r<b>Configuration</b> - \$config `n`r<b>Branch</b> - \$env:BRANCH`n`r${STEAM_BRANCH_STRING}<b>Number</b> - ${NUMBER}`n`r<b>Changelist</b> - \$change `n`r<b>SHELVE</b> - \$shelve${helpString}${ping}"
+    resultString = "\$emoji\$emoji\$emoji <b>${ResultType}</b> \$emoji\$emoji\$emoji `n`r`n`r<b>Type</b> - ${parameters.TYPE} `n`r<b>Platform</b> - \$env:PLATFORM `n`r<b>Target</b> - \$env:BUILD_TARGET `n`r<b>Configuration</b> - \$config `n`r<b>Branch</b> - \$env:BRANCH`n`r${parameters.STEAM_BRANCH_STRING}<b>Number</b> - ${parameters.NUMBER}`n`r<b>Changelist</b> - \$change `n`r<b>SHELVE</b> - \$shelve${helpString}${ping}"
     powershell """
         \$change = "${main_items.CHANGE}"
         \$shelve = "${main_items.SHELVE}"
