@@ -5,6 +5,7 @@ def bot_send_message(main_items, parameters) {
     def ResultType =  ""
     def ping = ""
     def currentBuild = currentBuild.currentResult
+    print currentBuild
     if ( parameters.PING != 'None' ) {
         ping = " `n`r${parameters.PING}"
     }
