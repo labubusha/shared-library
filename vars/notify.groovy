@@ -1,48 +1,45 @@
-def bot_send_message(main_items, parameters) {
-    def resultString = ""
-    def helpString = ""
-    def emoji = ""
-    def ResultType =  ""
-    def ping = ""
-    def currentBuild = currentBuild.currentResult
-    print currentBuild
+def bot_send_message(main_items, parameters, result) {
+    def message = [
+        resultString: "", helpString: "", 
+        emoji: "", resultType: "", ping: ""
+    ]
     if ( parameters.PING != 'None' ) {
-        ping = " `n`r${parameters.PING}"
+        message.ping = " `n`r${parameters.PING}"
     }
     if ( parameters.STATUS != 'None' ) {
-        switch (currentBuild) {
+        switch (result) {
             case 'FAILURE': 
-                emoji = "[char]::ConvertFromUtf32(0x274C)"
-                helpString = " `n`r<b>Failed at step</b> - ${parameters.STATUS}"
-                ResultType = "<b>FAILURE</b>"
+                message.emoji = "[char]::ConvertFromUtf32(0x274C)"
+                message.helpString = " `n`r<b>Failed at step</b> - ${parameters.STATUS}"
+                message.resultType = "<b>FAILURE</b>"
                 break
             case 'SUCCESS': 
-                emoji = "[char]::ConvertFromUtf32(0x2705)"
-                ResultType =  "<b>SUCCESSFUL</b>"
+                message.emoji = "[char]::ConvertFromUtf32(0x2705)"
+                message.resultType =  "<b>SUCCESSFUL</b>"
                 break
             case 'ABORTED': 
-                emoji = "[char]::ConvertFromUtf32(0x2716)"
-                ResultType =  "<b>ABORTED</b>"
+                message.emoji = "[char]::ConvertFromUtf32(0x2716)"
+                message.resultType =  "<b>ABORTED</b>"
                 break
             case 'FIXED':
-                emoji = "[char]::ConvertFromUtf32(0x2705)"
-                ResultType =  "<b>FIXED</b>"
+                message.emoji = "[char]::ConvertFromUtf32(0x2705)"
+                message.resultType =  "<b>FIXED</b>"
                 break
             case 'REGRESSION': 
-                emoji = "[char]::ConvertFromUtf32(0x274C)"
-                helpString = " `n`r<b>Failed at step</b> - ${parameters.STATUS}"
-                ResultType = "<b>REGRESSION</b>"
+                message.emoji = "[char]::ConvertFromUtf32(0x274C)"
+                message.helpString = " `n`r<b>Failed at step</b> - ${parameters.STATUS}"
+                message.resultType = "<b>REGRESSION</b>"
                 break
         }    
     }
-    resultString = "\$emoji\$emoji\$emoji <b>${ResultType}</b> \$emoji\$emoji\$emoji `n`r`n`r<b>Type</b> - ${parameters.TYPE} `n`r<b>Platform</b> - \$env:PLATFORM `n`r<b>Target</b> - \$env:BUILD_TARGET `n`r<b>Configuration</b> - \$config `n`r<b>Branch</b> - \$env:BRANCH`n`r${parameters.STEAM_BRANCH_STRING}<b>Number</b> - ${parameters.NUMBER}`n`r<b>Changelist</b> - \$change `n`r<b>SHELVE</b> - \$shelve${helpString}${ping}"
+    message.resultString = "\$emoji\$emoji\$emoji <b>${message.resultType}</b> \$emoji\$emoji\$emoji `n`r`n`r<b>Type</b> - ${parameters.TYPE} `n`r<b>Platform</b> - \$env:PLATFORM `n`r<b>Target</b> - \$env:BUILD_TARGET `n`r<b>Configuration</b> - \$config `n`r<b>Branch</b> - \$env:BRANCH`n`r${parameters.STEAM_BRANCH_STRING}<b>Number</b> - ${parameters.NUMBER}`n`r<b>Changelist</b> - \$change `n`r<b>SHELVE</b> - \$shelve${message.helpString}${message.ping}"
     powershell """
         \$change = "${main_items.CHANGE}"
         \$shelve = "${main_items.SHELVE}"
         echo \$shelve
         \$config = \$env:VS_CONFIG.Replace('+', '%2B')
-        \$emoji = ${emoji}
-        \$message = "${resultString}"
+        \$emoji = ${message.emoji}
+        \$message = "${message.resultString}"
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
         \$Response = Invoke-RestMethod -Uri "https://api.telegram.org/bot${main_items.BOT_TOKEN}/sendMessage?chat_id=${main_items.CHAT_ID}&text=\$(\${message})&parse_mode=HTML"
     """           
