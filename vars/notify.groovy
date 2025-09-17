@@ -1,3 +1,9 @@
+def call(Map args = [:]) {
+    def defaultValues = [STATUS: 'None', PING: 'None', NUMBER: '\$env:BUILD_ID', STEAM_BRANCH_STRING: '', TYPE: '\$env:JOB_BASE_NAME']
+    def config = defaultValues << args
+    return config
+}
+
 def bot_send_message(main_items, parameters, result) {
     def message = [
         resultString: "", helpString: "", 
