@@ -5,21 +5,34 @@ def call(Map args = [:]) {
 }
 
 def bot_send_message(parameters, result) {
-    if (parameters.CHANGE == "" && parameters.BOT_TOKEN == "" && parameters.CHAT_ID == "" ) {
+    if (parameters.containsKey("change") && parameters.containsKey("bot_token") && parameters.containsKey("chat_id") ) {
         return "Error! Required parameters are missing."
     }
     def message = [
         resultString: "", helpString: "", 
-        emoji: "", resultType: "", ping: ""
+        emoji: "", resultType: "", ping: "", number: '\$env:BUILD_ID', 
+        steam_branch_string: '', type: '\$env:JOB_BASE_NAME', shelve: ''
     ]
-    if ( parameters.PING != 'None' ) {
-        message.ping = " `n`r${parameters.PING}"
+    if ( parameters.containsKey("ping") ) {
+        message.ping = " `n`r${parameters.ping}"
     }
-    if ( parameters.STATUS != 'None' ) {
+    if ( parameters.containsKey("number") ) {
+        message.number = parameters.number
+    }
+    if ( parameters.containsKey("steam_branch_string") ) {
+        message.steam_branch_string = parameters.steam_branch_string
+    }
+    if ( parameters.containsKey("type") ) {
+        message.type = parameters.type
+    }
+    if ( parameters.containsKey('shelve') ) {
+        message.shelve = parameters.shelve
+    }
+    if ( parameters.containsKey("status") ) {
         switch (result) {
             case 'FAILURE': 
                 message.emoji = "[char]::ConvertFromUtf32(0x274C)"
-                message.helpString = " `n`r<b>Failed at step</b> - ${parameters.STATUS}"
+                message.helpString = " `n`r<b>Failed at step</b> - ${parameters.status}"
                 message.resultType = "<b>FAILURE</b>"
                 break
             case 'SUCCESS': 
@@ -36,22 +49,22 @@ def bot_send_message(parameters, result) {
                 break
             case 'REGRESSION': 
                 message.emoji = "[char]::ConvertFromUtf32(0x274C)"
-                message.helpString = " `n`r<b>Failed at step</b> - ${parameters.STATUS}"
+                message.helpString = " `n`r<b>Failed at step</b> - ${parameters.status}"
                 message.resultType = "<b>REGRESSION</b>"
                 break
         }    
     }
-    message.resultString = "\$emoji\$emoji\$emoji <b>${message.resultType}</b> \$emoji\$emoji\$emoji `n`r`n`r<b>Type</b> - ${parameters.TYPE} `n`r<b>Platform</b> - \$env:PLATFORM `n`r<b>Target</b> - \$env:BUILD_TARGET `n`r<b>Configuration</b> - \$config `n`r<b>Branch</b> - \$env:BRANCH`n`r${parameters.STEAM_BRANCH_STRING}<b>Number</b> - ${parameters.NUMBER}`n`r<b>Changelist</b> - \$change `n`r<b>SHELVE</b> - \$shelve${message.helpString}${message.ping}"
+    message.resultString = "\$emoji\$emoji\$emoji <b>${message.resultType}</b> \$emoji\$emoji\$emoji `n`r`n`r<b>Type</b> - ${message.type} `n`r<b>Platform</b> - \$env:PLATFORM `n`r<b>Target</b> - \$env:BUILD_TARGET `n`r<b>Configuration</b> - \$config `n`r<b>Branch</b> - \$env:BRANCH`n`r${message.steam_branch_string}<b>Number</b> - ${message.number}`n`r<b>Changelist</b> - \$change `n`r<b>SHELVE</b> - \$shelve${message.helpString}${message.ping}"
     
     powershell """
-        \$change = "${parameters.CHANGE}"
-        \$shelve = "${parameters.SHELVE}"
+        \$change = "${parameters.change}"
+        \$shelve = "${message.shelve}"
         echo \$shelve
         \$config = \$env:VS_CONFIG.Replace('+', '%2B')
         \$emoji = ${message.emoji}
         \$message = "${message.resultString}"
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-        \$Response = Invoke-RestMethod -Uri "https://api.telegram.org/bot${parameters.BOT_TOKEN}/sendMessage?chat_id=${parameters.CHAT_ID}&text=\$(\${message})&parse_mode=HTML"
+        \$Response = Invoke-RestMethod -Uri "https://api.telegram.org/bot${parameters.bot_token}/sendMessage?chat_id=${parameters.chat_id}&text=\$(\${message})&parse_mode=HTML"
     """   
             
 }
