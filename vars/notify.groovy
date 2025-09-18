@@ -5,6 +5,9 @@ def call(Map args = [:]) {
 }
 
 def bot_send_message(parameters, result) {
+    if (parameters.CHANGE == "" && parameters.BOT_TOKEN == "" && parameters.CHAT_ID == "" ) {
+        return "Error! Required parameters are missing."
+    }
     def message = [
         resultString: "", helpString: "", 
         emoji: "", resultType: "", ping: ""
@@ -40,10 +43,7 @@ def bot_send_message(parameters, result) {
     }
     message.resultString = "\$emoji\$emoji\$emoji <b>${message.resultType}</b> \$emoji\$emoji\$emoji `n`r`n`r<b>Type</b> - ${parameters.TYPE} `n`r<b>Platform</b> - \$env:PLATFORM `n`r<b>Target</b> - \$env:BUILD_TARGET `n`r<b>Configuration</b> - \$config `n`r<b>Branch</b> - \$env:BRANCH`n`r${parameters.STEAM_BRANCH_STRING}<b>Number</b> - ${parameters.NUMBER}`n`r<b>Changelist</b> - \$change `n`r<b>SHELVE</b> - \$shelve${message.helpString}${message.ping}"
     
-    if (parameters.CHANGE == "" || parameters.SHELVE == "" || parameters.BOT_TOKEN == "" || parameters.CHAT_ID == "" ) {
-        echo "Error! Required parameters are missing."
-    } else {
-        powershell """
+    powershell """
         \$change = "${parameters.CHANGE}"
         \$shelve = "${parameters.SHELVE}"
         echo \$shelve
@@ -53,7 +53,7 @@ def bot_send_message(parameters, result) {
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
         \$Response = Invoke-RestMethod -Uri "https://api.telegram.org/bot${parameters.BOT_TOKEN}/sendMessage?chat_id=${parameters.CHAT_ID}&text=\$(\${message})&parse_mode=HTML"
     """   
-    }        
+            
 }
 
 def send_log(main_items, logFileName) {
