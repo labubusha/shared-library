@@ -1,10 +1,10 @@
 def call(Map args = [:]) {
-    def defaultValues = [STATUS: 'None', PING: 'None', NUMBER: '\$env:BUILD_ID', STEAM_BRANCH_STRING: '', TYPE: '\$env:JOB_BASE_NAME']
+    def defaultValues = [CHANGE: "", SHELVE: "", BOT_TOKEN: "", CHAT_ID: "", STATUS: 'None', PING: 'None', NUMBER: '\$env:BUILD_ID', STEAM_BRANCH_STRING: '', TYPE: '\$env:JOB_BASE_NAME']
     def config = defaultValues << args
     return config
 }
 
-def bot_send_message(main_items, parameters, result) {
+def bot_send_message(parameters, result) {
     def message = [
         resultString: "", helpString: "", 
         emoji: "", resultType: "", ping: ""
@@ -41,17 +41,17 @@ def bot_send_message(main_items, parameters, result) {
     message.resultString = "\$emoji\$emoji\$emoji <b>${message.resultType}</b> \$emoji\$emoji\$emoji `n`r`n`r<b>Type</b> - ${parameters.TYPE} `n`r<b>Platform</b> - \$env:PLATFORM `n`r<b>Target</b> - \$env:BUILD_TARGET `n`r<b>Configuration</b> - \$config `n`r<b>Branch</b> - \$env:BRANCH`n`r${parameters.STEAM_BRANCH_STRING}<b>Number</b> - ${parameters.NUMBER}`n`r<b>Changelist</b> - \$change `n`r<b>SHELVE</b> - \$shelve${message.helpString}${message.ping}"
     
     if (parameters.CHANGE == "" || parameters.SHELVE == "" || parameters.BOT_TOKEN == "" || parameters.CHAT_ID == "" ) {
-        echo "Error! Missed required parameters."
+        echo "Error! Required parameters are missing."
     } else {
         powershell """
-        \$change = "${main_items.CHANGE}"
-        \$shelve = "${main_items.SHELVE}"
+        \$change = "${parameters.CHANGE}"
+        \$shelve = "${parameters.SHELVE}"
         echo \$shelve
         \$config = \$env:VS_CONFIG.Replace('+', '%2B')
         \$emoji = ${message.emoji}
         \$message = "${message.resultString}"
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-        \$Response = Invoke-RestMethod -Uri "https://api.telegram.org/bot${main_items.BOT_TOKEN}/sendMessage?chat_id=${main_items.CHAT_ID}&text=\$(\${message})&parse_mode=HTML"
+        \$Response = Invoke-RestMethod -Uri "https://api.telegram.org/bot${parameters.BOT_TOKEN}/sendMessage?chat_id=${parameters.CHAT_ID}&text=\$(\${message})&parse_mode=HTML"
     """   
     }        
 }
