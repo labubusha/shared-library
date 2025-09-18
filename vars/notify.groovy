@@ -39,7 +39,11 @@ def bot_send_message(main_items, parameters, result) {
         }    
     }
     message.resultString = "\$emoji\$emoji\$emoji <b>${message.resultType}</b> \$emoji\$emoji\$emoji `n`r`n`r<b>Type</b> - ${parameters.TYPE} `n`r<b>Platform</b> - \$env:PLATFORM `n`r<b>Target</b> - \$env:BUILD_TARGET `n`r<b>Configuration</b> - \$config `n`r<b>Branch</b> - \$env:BRANCH`n`r${parameters.STEAM_BRANCH_STRING}<b>Number</b> - ${parameters.NUMBER}`n`r<b>Changelist</b> - \$change `n`r<b>SHELVE</b> - \$shelve${message.helpString}${message.ping}"
-    powershell """
+    
+    if (parameters.CHANGE == "" || parameters.SHELVE == "" || parameters.BOT_TOKEN == "" || parameters.CHAT_ID == "" ) {
+        echo "Error! Missed required parameters."
+    } else {
+        powershell """
         \$change = "${main_items.CHANGE}"
         \$shelve = "${main_items.SHELVE}"
         echo \$shelve
@@ -48,7 +52,8 @@ def bot_send_message(main_items, parameters, result) {
         \$message = "${message.resultString}"
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
         \$Response = Invoke-RestMethod -Uri "https://api.telegram.org/bot${main_items.BOT_TOKEN}/sendMessage?chat_id=${main_items.CHAT_ID}&text=\$(\${message})&parse_mode=HTML"
-    """           
+    """   
+    }        
 }
 
 def send_log(main_items, logFileName) {
