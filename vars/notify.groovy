@@ -54,7 +54,7 @@ def bot_send_message(parameters, result) {
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
         \$Response = Invoke-RestMethod -Uri "https://api.telegram.org/bot${parameters.BOT_TOKEN}/sendMessage?chat_id=${parameters.CHAT_ID}&text=\$(\${message})&parse_mode=HTML"
     """ 
-    } catch (ExceptionType e) {
+    } catch (Exception e) {
         echo "An error occurred: ${e.message}"
         e.printStackTrace()
     } finally {
