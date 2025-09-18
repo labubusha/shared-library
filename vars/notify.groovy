@@ -4,7 +4,7 @@ def call(Map args = [:]) {
     return config
 }
 
-def bot_send_message(parameters, result) {
+def bot_send_message(Map parameters, result) {
     if (parameters.containsKey("change") && parameters.containsKey("bot_token") && parameters.containsKey("chat_id") ) {
         return "Error! Required parameters are missing."
     }
