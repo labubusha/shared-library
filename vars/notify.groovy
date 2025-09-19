@@ -4,8 +4,14 @@ def call(Map args = [:]) {
     return config
 }
 
+private def check_param(parameters, key) {
+    if (parameters.containsKey(key) && parameters[key] != "") {
+        return true
+    }
+}
+
 def bot_send_message(Map parameters, result) {
-    if (!parameters.containsKey("change") && !parameters.containsKey("bot_token") && !parameters.containsKey("chat_id") ) {
+    if (!check_param(parameters,"change") && !check_param(parameters, "bot_token") && !check_param(parameters, "chat_id") ) {
         return "Error! Required parameters are missing."
     }
     def message = [
