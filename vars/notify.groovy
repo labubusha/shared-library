@@ -16,8 +16,9 @@ def bot_send_message(Map parameters, result) {
     println check_param(parameters,"change") 
     println check_param(parameters, "bot_token")
     println check_param(parameters, "chat_id")
-    if (!check_param(parameters,"change") || !check_param(parameters, "bot_token") || !check_param(parameters, "chat_id") ) {
-        return "Error! Required parameters are missing."
+    if (!check_param(parameters,"change") && !check_param(parameters, "bot_token") && !check_param(parameters, "chat_id") ) {
+        echo "Error! Required parameters are missing."
+        return 
     }
     def message = [
         resultString: "", helpString: "", 
