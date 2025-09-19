@@ -66,26 +66,42 @@ def bot_send_message(Map parameters, result, Bool platform, Bool target, Bool co
         message.branch = " `n`r<b>Branch</b> - \$env:BRANCH"
     }
 
+<<<<<<< HEAD
+=======
+    if ( parameters.containsKey("steam_branch_string") ) {
+        message.steam_branch_string = "`n`r<b>Steam branch</b> - ${parameters.steam_branch_string}"
+    }
+
+    if ( parameters.containsKey("ping") ) {
+        message.ping = " `n`r${parameters.ping}"
+    }
+>>>>>>> 532c337 (add optional param branch)
     if ( parameters.containsKey("number") ) {
         message.number = "<b>Number</b> - ${parameters.number}"
     }
 
+<<<<<<< HEAD
     if ( parameters.containsKey("steam_branch_string") ) {
         message.steam_branch_string = "`n`r<b>Steam branch</b> - ${parameters.steam_branch_string}"
     }
 
     
 
+=======
+>>>>>>> 532c337 (add optional param branch)
     
     
     if ( parameters.containsKey('shelve') ) {
         message.shelve = parameters.shelve
     }
     
+<<<<<<< HEAD
     if ( parameters.containsKey("ping") ) {
         message.ping = " `n`r${parameters.ping}"
     }
 
+=======
+>>>>>>> 532c337 (add optional param branch)
     message.resultString = "\$emoji\$emoji\$emoji <b>${message.resultType}</b> \$emoji\$emoji\$emoji `n`r${message.type}${message.platform}${message.target}${message.config}${message.branch}${message.steam_branch_string}${message.number}`n`r<b>Changelist</b> - \$change `n`r<b>SHELVE</b> - \$shelve${message.helpString}${message.ping}"
     
     powershell """
