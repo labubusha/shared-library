@@ -7,6 +7,8 @@ def call(Map args = [:]) {
 private def check_param(parameters, key) {
     if (parameters.containsKey(key) && parameters[key] != "") {
         return true
+    } else {
+        return false
     }
 }
 
