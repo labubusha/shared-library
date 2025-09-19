@@ -14,23 +14,10 @@ def bot_send_message(Map parameters, result) {
     def message = [
         resultString: "", helpString: "", 
         emoji: "", resultType: "", ping: "", number: "", 
-        steam_branch_string: "", type: "", shelve: ""
+        steam_branch_string: "", type: "", shelve: "", 
+        platform: "", target: ""
     ]
-    if ( parameters.containsKey("ping") ) {
-        message.ping = " `n`r${parameters.ping}"
-    }
-    if ( parameters.containsKey("number") ) {
-        message.number = "<b>Number</b> - ${parameters.number}"
-    }
-    if ( parameters.containsKey("steam_branch_string") ) {
-        message.steam_branch_string = parameters.steam_branch_string
-    }
-    if ( parameters.containsKey("type") ) {
-        message.type = "`n`r`n`r<b>Type</b> - ${parameters.type}"
-    }
-    if ( parameters.containsKey('shelve') ) {
-        message.shelve = parameters.shelve
-    }
+
     if ( parameters.containsKey("status") ) {
         switch (result) {
             case 'FAILURE': 
@@ -57,7 +44,35 @@ def bot_send_message(Map parameters, result) {
                 break
         }    
     }
-    message.resultString = "\$emoji\$emoji\$emoji <b>${message.resultType}</b> \$emoji\$emoji\$emoji ${message.type} `n`r<b>Platform</b> - \$env:PLATFORM `n`r<b>Target</b> - \$env:BUILD_TARGET `n`r<b>Configuration</b> - \$config `n`r<b>Branch</b> - \$env:BRANCH`n`r${message.steam_branch_string}${message.number}`n`r<b>Changelist</b> - \$change `n`r<b>SHELVE</b> - \$shelve${message.helpString}${message.ping}"
+
+    if ( parameters.containsKey("type") ) {
+        message.type = "`n`r`n`r<b>Type</b> - ${parameters.type}"
+    }
+
+    if ( parameters.containsKey("platform") ) {
+        message.platform = "`n`r<b>Platform</b> - ${parameters.platform}"
+    }
+
+    if ( parameters.containsKey("target") ) {
+        message.target = "`n`r<b>Target</b> - ${parameters.target}"
+    }
+
+    if ( parameters.containsKey("ping") ) {
+        message.ping = " `n`r${parameters.ping}"
+    }
+    if ( parameters.containsKey("number") ) {
+        message.number = "<b>Number</b> - ${parameters.number}"
+    }
+
+    if ( parameters.containsKey("steam_branch_string") ) {
+        message.steam_branch_string = parameters.steam_branch_string
+    }
+    
+    if ( parameters.containsKey('shelve') ) {
+        message.shelve = parameters.shelve
+    }
+    
+    message.resultString = "\$emoji\$emoji\$emoji <b>${message.resultType}</b> \$emoji\$emoji\$emoji ${message.type} ${message.platform} ${message.target} `n`r<b>Configuration</b> - \$config `n`r<b>Branch</b> - \$env:BRANCH`n`r${message.steam_branch_string}${message.number}`n`r<b>Changelist</b> - \$change `n`r<b>SHELVE</b> - \$shelve${message.helpString}${message.ping}"
     
     powershell """
         \$change = "${parameters.change}"
