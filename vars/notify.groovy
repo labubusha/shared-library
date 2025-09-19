@@ -1,9 +1,3 @@
-def call(Map args = [:]) {
-    def defaultValues = [CHANGE: "", SHELVE: "", BOT_TOKEN: "", CHAT_ID: "", STATUS: 'None', PING: 'None', NUMBER: '\$env:BUILD_ID', STEAM_BRANCH_STRING: '', TYPE: '\$env:JOB_BASE_NAME']
-    def config = defaultValues << args
-    return config
-}
-
 private def check_param(parameters, key) {
     if (parameters.containsKey(key) && parameters[key] != "") {
         return true
@@ -13,24 +7,20 @@ private def check_param(parameters, key) {
 }
 
 def bot_send_message(Map parameters, result) {
-    println !check_param(parameters,"change") 
-    println !check_param(parameters, "bot_token")
-    println !check_param(parameters, "chat_id")
     if (!(check_param(parameters,"change") && check_param(parameters, "bot_token") && check_param(parameters, "chat_id"))) {
-        echo "Error! Required parameters are missing."
+        echo "Error! Missing required parameters — change, bot_token, chat_id. "
         return 
     }
-    println result
     def message = [
         resultString: "", helpString: "", 
-        emoji: "", resultType: "", ping: "", number: '\$env:BUILD_ID', 
-        steam_branch_string: '', type: '\$env:JOB_BASE_NAME', shelve: ''
+        emoji: "", resultType: "", ping: "", number: "", 
+        steam_branch_string: "", type: "", shelve: ""
     ]
     if ( parameters.containsKey("ping") ) {
         message.ping = " `n`r${parameters.ping}"
     }
     if ( parameters.containsKey("number") ) {
-        message.number = parameters.number
+        message.number = "<b>Number</b> - ${parameters.number}"
     }
     if ( parameters.containsKey("steam_branch_string") ) {
         message.steam_branch_string = parameters.steam_branch_string
@@ -67,7 +57,7 @@ def bot_send_message(Map parameters, result) {
                 break
         }    
     }
-    message.resultString = "\$emoji\$emoji\$emoji <b>${message.resultType}</b> \$emoji\$emoji\$emoji `n`r`n`r<b>Type</b> - ${message.type} `n`r<b>Platform</b> - \$env:PLATFORM `n`r<b>Target</b> - \$env:BUILD_TARGET `n`r<b>Configuration</b> - \$config `n`r<b>Branch</b> - \$env:BRANCH`n`r${message.steam_branch_string}<b>Number</b> - ${message.number}`n`r<b>Changelist</b> - \$change `n`r<b>SHELVE</b> - \$shelve${message.helpString}${message.ping}"
+    message.resultString = "\$emoji\$emoji\$emoji <b>${message.resultType}</b> \$emoji\$emoji\$emoji `n`r`n`r<b>Type</b> - ${message.type} `n`r<b>Platform</b> - \$env:PLATFORM `n`r<b>Target</b> - \$env:BUILD_TARGET `n`r<b>Configuration</b> - \$config `n`r<b>Branch</b> - \$env:BRANCH`n`r${message.steam_branch_string}${message.number}`n`r<b>Changelist</b> - \$change `n`r<b>SHELVE</b> - \$shelve${message.helpString}${message.ping}"
     
     powershell """
         \$change = "${parameters.change}"
