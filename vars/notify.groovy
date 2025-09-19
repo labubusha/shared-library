@@ -16,7 +16,7 @@ def bot_send_message(Map parameters, result) {
         resultString: "", helpString: "", 
         emoji: "", resultType: "", ping: "", number: "", 
         steam_branch_string: "", type: "", shelve: "", 
-        platform: "", target: "", config: ""
+        platform: "", target: "", config: "", branch: ""
     ]
 
     if ( parameters.containsKey("status") ) {
@@ -62,6 +62,10 @@ def bot_send_message(Map parameters, result) {
         message.config = " `n`r<b>Configuration</b> - ${parameters.config}"
     }
 
+    if ( parameters.containsKey("branch") ) {
+        message.branch = " `n`r<b>Branch</b> - ${parameters.branch}"
+    }
+
     if ( parameters.containsKey("ping") ) {
         message.ping = " `n`r${parameters.ping}"
     }
@@ -77,7 +81,7 @@ def bot_send_message(Map parameters, result) {
         message.shelve = parameters.shelve
     }
     
-    message.resultString = "\$emoji\$emoji\$emoji <b>${message.resultType}</b> \$emoji\$emoji\$emoji `n`r${message.type}${message.platform}${message.target}${message.config} `n`r<b>Branch</b> - \$env:BRANCH`n`r${message.steam_branch_string}${message.number}`n`r<b>Changelist</b> - \$change `n`r<b>SHELVE</b> - \$shelve${message.helpString}${message.ping}"
+    message.resultString = "\$emoji\$emoji\$emoji <b>${message.resultType}</b> \$emoji\$emoji\$emoji `n`r${message.type}${message.platform}${message.target}${message.config}${message.branch}`n`r${message.steam_branch_string}${message.number}`n`r<b>Changelist</b> - \$change `n`r<b>SHELVE</b> - \$shelve${message.helpString}${message.ping}"
     
     powershell """
         \$change = "${parameters.change}"
