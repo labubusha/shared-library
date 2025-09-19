@@ -20,6 +20,7 @@ def bot_send_message(Map parameters, result) {
         echo "Error! Required parameters are missing."
         return 
     }
+    println result
     def message = [
         resultString: "", helpString: "", 
         emoji: "", resultType: "", ping: "", number: '\$env:BUILD_ID', 
