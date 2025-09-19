@@ -11,6 +11,7 @@ def bot_send_message(Map parameters, result) {
         echo "Error! Missing required parameters — change, bot_token, chat_id. "
         return 
     }
+    println result
     def message = [
         resultString: "", helpString: "", 
         emoji: "", resultType: "", ping: "", number: "", 
