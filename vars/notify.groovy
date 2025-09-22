@@ -75,7 +75,6 @@ def bot_send_message(Map parameters, result) {
     }
     
     if ( parameters.containsKey('shelve') ) {
-        echo "${parameters.shelve}"
         message.shelve = " `n`r<b>SHELVE</b> - ${parameters.shelve}"
     }
     
