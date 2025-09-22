@@ -67,7 +67,7 @@ def bot_send_message(Map parameters, result) {
     }
 
     if ( parameters.containsKey("number") ) {
-        message.number = "<b>Number</b> - ${parameters.number}"
+        message.number = " `n`r<b>Number</b> - ${parameters.number}"
     }
 
     if ( parameters.containsKey("steam_branch_string") ) {
