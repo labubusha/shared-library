@@ -85,7 +85,9 @@ def bot_send_message(Map parameters, result) {
     }
 
     message.resultString = "\$emoji\$emoji\$emoji <b>${message.resultType}</b> \$emoji\$emoji\$emoji `n`r${message.type}${message.platform}${message.target}${message.config}${message.branch}${message.steam_branch_string}${message.number}`n`r<b>Changelist</b> - \$change${message.shelve}${message.helpString}${message.ping}"
-    
+
+    print message.resultString
+
     powershell """
         \$change = "${parameters.change}"
         \$emoji = ${message.emoji}
