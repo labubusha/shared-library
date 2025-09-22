@@ -59,7 +59,7 @@ def bot_send_message(Map parameters, result) {
     }
 
     if ( parameters.containsKey("config") ) {
-        message.config = " `n`r<b>Configuration</b> - ${parameters.config}"
+        message.config = " `n`r<b>Configuration</b> - ${parameters.config.replace(" ", "+")}"
         print message.config
     }
 
