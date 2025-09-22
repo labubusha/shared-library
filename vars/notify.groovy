@@ -6,7 +6,7 @@ private def check_param(parameters, key) {
     }
 }
 
-def bot_send_message(Map parameters, result, Bool platform, Bool target, Bool config, Bool branch) {
+def bot_send_message(Map parameters, result) {
     if (!(check_param(parameters,"change") && check_param(parameters, "bot_token") && check_param(parameters, "chat_id"))) {
         echo "Error! Missing required parameters — change, bot_token, chat_id. "
         return 
@@ -50,58 +50,42 @@ def bot_send_message(Map parameters, result, Bool platform, Bool target, Bool co
         message.type = "`n`r<b>Type</b> - ${parameters.type}"
     }
 
-    if ( platform ) {
-        message.platform = " `n`r<b>Platform</b> - \$env:PLATFORM"
+    if ( parameters.containsKey("platform") ) {
+        message.platform = " `n`r<b>Platform</b> - ${parameters.platform}"
     }
 
-    if ( target ) {
-        message.target = " `n`r<b>Target</b> - \$env:BUILD_TARGET"
+    if ( parameters.containsKey("target") ) {
+        message.target = " `n`r<b>Target</b> - ${parameters.target}"
     }
 
-    if ( config ) {
-        message.config = " `n`r<b>Configuration</b> - \$env:VS_CONFIG.Replace('+', '%2B')"
+    if ( parameters.containsKey("config") ) {
+        message.config = " `n`r<b>Configuration</b> - ${parameters.config}"
     }
 
-    if ( branch ) {
-        message.branch = " `n`r<b>Branch</b> - \$env:BRANCH"
+    if ( parameters.containsKey("branch") ) {
+        message.branch = " `n`r<b>Branch</b> - ${parameters.branch}"
     }
 
-<<<<<<< HEAD
-=======
-    if ( parameters.containsKey("steam_branch_string") ) {
-        message.steam_branch_string = "`n`r<b>Steam branch</b> - ${parameters.steam_branch_string}"
-    }
-
-    if ( parameters.containsKey("ping") ) {
-        message.ping = " `n`r${parameters.ping}"
-    }
->>>>>>> 532c337 (add optional param branch)
     if ( parameters.containsKey("number") ) {
         message.number = "<b>Number</b> - ${parameters.number}"
     }
 
-<<<<<<< HEAD
     if ( parameters.containsKey("steam_branch_string") ) {
         message.steam_branch_string = "`n`r<b>Steam branch</b> - ${parameters.steam_branch_string}"
     }
 
     
 
-=======
->>>>>>> 532c337 (add optional param branch)
     
     
     if ( parameters.containsKey('shelve') ) {
         message.shelve = parameters.shelve
     }
     
-<<<<<<< HEAD
     if ( parameters.containsKey("ping") ) {
         message.ping = " `n`r${parameters.ping}"
     }
 
-=======
->>>>>>> 532c337 (add optional param branch)
     message.resultString = "\$emoji\$emoji\$emoji <b>${message.resultType}</b> \$emoji\$emoji\$emoji `n`r${message.type}${message.platform}${message.target}${message.config}${message.branch}${message.steam_branch_string}${message.number}`n`r<b>Changelist</b> - \$change `n`r<b>SHELVE</b> - \$shelve${message.helpString}${message.ping}"
     
     powershell """
