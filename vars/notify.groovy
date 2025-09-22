@@ -73,25 +73,20 @@ def bot_send_message(Map parameters, result) {
     if ( parameters.containsKey("steam_branch_string") ) {
         message.steam_branch_string = "`n`r<b>Steam branch</b> - ${parameters.steam_branch_string}"
     }
-
-    
-
-    
     
     if ( parameters.containsKey('shelve') ) {
-        message.shelve = parameters.shelve
+        echo "${parameters.shelve}"
+        message.shelve = " `n`r<b>SHELVE</b> - ${parameters.shelve}"
     }
     
     if ( parameters.containsKey("ping") ) {
         message.ping = " `n`r${parameters.ping}"
     }
 
-    message.resultString = "\$emoji\$emoji\$emoji <b>${message.resultType}</b> \$emoji\$emoji\$emoji `n`r${message.type}${message.platform}${message.target}${message.config}${message.branch}${message.steam_branch_string}${message.number}`n`r<b>Changelist</b> - \$change `n`r<b>SHELVE</b> - \$shelve${message.helpString}${message.ping}"
+    message.resultString = "\$emoji\$emoji\$emoji <b>${message.resultType}</b> \$emoji\$emoji\$emoji `n`r${message.type}${message.platform}${message.target}${message.config}${message.branch}${message.steam_branch_string}${message.number}`n`r<b>Changelist</b> - \$change${message.shelve}${message.helpString}${message.ping}"
     
     powershell """
         \$change = "${parameters.change}"
-        \$shelve = "${message.shelve}"
-        echo \$shelve
         \$emoji = ${message.emoji}
         \$message = "${message.resultString}"
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
