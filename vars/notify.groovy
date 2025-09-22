@@ -59,9 +59,7 @@ def bot_send_message(Map parameters, result) {
     }
 
     if ( parameters.containsKey("config") ) {
-        print parameters.config
         message.config = " `n`r<b>Configuration</b> - ${parameters.config.replace("+", "%2B")}"
-        print message.config
     }
 
     if ( parameters.containsKey("branch") ) {
@@ -85,8 +83,6 @@ def bot_send_message(Map parameters, result) {
     }
 
     message.resultString = "\$emoji\$emoji\$emoji <b>${message.resultType}</b> \$emoji\$emoji\$emoji `n`r${message.type}${message.platform}${message.target}${message.config}${message.branch}${message.steam_branch_string}${message.number}`n`r<b>Changelist</b> - \$change${message.shelve}${message.helpString}${message.ping}"
-
-    print message.resultString
 
     powershell """
         \$change = "${parameters.change}"
