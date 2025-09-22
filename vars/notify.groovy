@@ -60,6 +60,7 @@ def bot_send_message(Map parameters, result) {
 
     if ( parameters.containsKey("config") ) {
         message.config = " `n`r<b>Configuration</b> - ${parameters.config}"
+        print message.config
     }
 
     if ( parameters.containsKey("branch") ) {
