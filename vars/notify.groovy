@@ -111,7 +111,7 @@ private send_log_bat(main_items, logFileName, Boolean get7z = false) {
 }
 
 def send_log(main_items, logFileName, Boolean checkFileSize = false) {
-    if (checkFileSize) {
+    if (!checkFileSize) {
         def fileSizeInBytes = powershell(returnStdout: true, script: "(Get-Item '${logFileName}').Length")
         def fileSize = fileSizeInBytes.toInteger()
         def fileSizeInMB = fileSize / (1024 * 1024)
