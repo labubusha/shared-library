@@ -40,8 +40,10 @@ def bot_send_message(Map parameters, result) {
                 break
             case 'REGRESSION': 
                 message.emoji = "[char]::ConvertFromUtf32(0x274C)"
-                message.helpString = " `n`r<b>Failed at step</b> - ${parameters.status}"
                 message.resultType = "<b>REGRESSION</b>"
+                if (parameters.status != "") {
+                    message.helpString = " `n`r<b>Failed at step</b> - ${parameters.status}"
+                }
                 break
         }    
     }
@@ -94,28 +96,40 @@ def bot_send_message(Map parameters, result) {
             
 }
 
-def send_log(main_items, logFileName) {
-    def fileSizeInBytes = powershell(returnStdout: true, script: "(Get-Item '${logFileName}').Length")
-    def fileSize = fileSizeInBytes.toInteger()
-    def fileSizeInMB = fileSize / (1024 * 1024)
-    if (fileSizeInMB < 50)
-    {
+private send_log_bat(main_items, logFileName, Bool get7z = false) {
+    if (get7z) {
         bat """
-            curl -X POST "https://api.telegram.org/bot${main_items.BOT_TOKEN}/sendDocument" -F chat_id=${main_items.CHAT_ID} -F document="@${logFileName}"
+            curl -X POST "https://api.telegram.org/bot${main_items.bot_token}/sendDocument" -F chat_id=${main_items.chat_id} -F document="@${logFileName}"
         """
-    }
-    else
-    {
-        bat """
+    } else {
+         bat """
             "C:\\Program Files\\7-Zip\\7z.exe" a -t7z ${logFileName}.7z ${logFileName}
-            curl -X POST "https://api.telegram.org/bot${main_items.BOT_TOKEN}/sendDocument" -F chat_id=${main_items.CHAT_ID} -F document="@${logFileName}.7z"
+            curl -X POST "https://api.telegram.org/bot${main_items.bot_token}/sendDocument" -F chat_id=${main_items.chat_id} -F document="@${logFileName}.7z"
         """
     }
+    
+}
+
+def send_log(main_items, logFileName, Bool checkFileSize = false) {
+    if (checkFileSize) {
+        def fileSizeInBytes = powershell(returnStdout: true, script: "(Get-Item '${logFileName}').Length")
+        def fileSize = fileSizeInBytes.toInteger()
+        def fileSizeInMB = fileSize / (1024 * 1024)
+        if (fileSizeInMB < 50)
+        {
+            send_log_bat(main_items, logFileName)
+        } else {
+            send_log_bat(main_items, logFileName, true)
+        }
+    } else {
+        send_log_bat(main_items, logFileName)
+    }
+    
 }
 
 def download_log(curl_items, logFileName) {
     bat """
-        url -m 600 -X POST https://${curl_items.user}:${curl_items.token}@${curl_items.jenkins_url}/job/${curl_items.JOB_NAME}/${curl_items.BUILD_ID}/consoleText > ${logFileName} 2>&1
+        url -m 600 -X POST https://${curl_items.user}:${curl_items.token}@${curl_items.jenkins_url}/job/${curl_items.job_name}/${curl_items.build_id}/consoleText > ${logFileName} 2>&1
         exit /b 0
     """
 }
@@ -123,8 +137,8 @@ def download_log(curl_items, logFileName) {
 def send_error_message(main_items, htmlMessage) {
     powershell """
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-        \$botToken = "${main_items.BOT_TOKEN}"
-        \$chatId = "${main_items.CHAT_ID}"
+        \$botToken = "${main_items.bot_token}"
+        \$chatId = "${main_items.chat_id}"
         \$encodedMessage = [uri]::EscapeDataString('${htmlMessage}')
         \$uri = "https://api.telegram.org/bot\$botToken/sendMessage?chat_id=\$chatId&text=\$encodedMessage&parse_mode=HTML"
         \$Response = Invoke-RestMethod -Uri \$uri -Method Get
