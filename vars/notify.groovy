@@ -96,7 +96,7 @@ def bot_send_message(Map parameters, result) {
             
 }
 
-private send_log_bat(main_items, logFileName, Bool get7z = false) {
+private send_log_bat(main_items, logFileName, Boolean get7z = false) {
     if (get7z) {
         bat """
             curl -X POST "https://api.telegram.org/bot${main_items.bot_token}/sendDocument" -F chat_id=${main_items.chat_id} -F document="@${logFileName}"
@@ -110,7 +110,7 @@ private send_log_bat(main_items, logFileName, Bool get7z = false) {
     
 }
 
-def send_log(main_items, logFileName, Bool checkFileSize = false) {
+def send_log(main_items, logFileName, Boolean checkFileSize = false) {
     if (checkFileSize) {
         def fileSizeInBytes = powershell(returnStdout: true, script: "(Get-Item '${logFileName}').Length")
         def fileSize = fileSizeInBytes.toInteger()
