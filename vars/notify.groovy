@@ -99,7 +99,7 @@ def bot_send_message(Map parameters, result) {
 private send_log_bat(main_items, logFileName, Boolean get7z = false) {
     if (!get7z) {
         bat """
-            curl -X POST "https://api.telegram.org/bot${main_items.bot_token}/sendDocument" -F chat_id='${main_items.chat_id}' -F document='@${logFileName}'
+            curl -X POST "https://api.telegram.org/bot${main_items.bot_token}/sendDocument" -F chat_id=${main_items.chat_id} -F document='@${logFileName}'
         """
     } else {
          bat """
