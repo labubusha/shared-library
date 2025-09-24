@@ -6,24 +6,25 @@ private def check_bot_items(parameters) {
     }
 }
 
-private def check_param(parameters, key) {
-    if (parameters.containsKey(key) && parameters[key] != "") {
-        return true
-    } else {
-        return false
-    }
-}
+// private def check_param(parameters, key) {
+//     if (parameters.containsKey(key) && parameters[key] != "") {
+//         return true
+//     } else {
+//         return false
+//     }
+// }
 
 def bot_send_message(Map parameters, result) {
-    if (!(check_param(parameters,"change") && check_bot_items(parameters) && parameters.containsKey("status"))) {
-        echo "Error! Missing required parameters — change, bot_token, chat_id. Also required (can be empty): status."
+    if (!(check_bot_items(parameters) && parameters.containsKey("status"))) {
+        echo "Error! Missing required parameters — bot_token, chat_id. Also required (can be empty): status."
         return 
     }
     def message = [
         resultString: "", helpString: "", 
         emoji: "", resultType: "", ping: "", number: "", 
         steam_branch_string: "", type: "", shelve: "", 
-        platform: "", target: "", config: "", branch: ""
+        platform: "", target: "", config: "", branch: "",
+        change: ""
     ]
 
     switch (result) {
@@ -79,6 +80,10 @@ def bot_send_message(Map parameters, result) {
         message.number = " `n`r<b>Number</b> - ${parameters.number}"
     }
 
+    if ( parameters.containsKey("change") ) {
+        message.change = "`n`r<b>Changelist</b> - ${parameters.change}"
+    }
+
     if ( parameters.containsKey("steam_branch_string") ) {
         message.steam_branch_string = "`n`r<b>Steam branch</b> - ${parameters.steam_branch_string}"
     }
@@ -91,7 +96,7 @@ def bot_send_message(Map parameters, result) {
         message.ping = " `n`r@${parameters.ping}"
     }
 
-    message.resultString = "\$emoji\$emoji\$emoji ${message.resultType} \$emoji\$emoji\$emoji `n`r${message.type}${message.platform}${message.target}${message.config}${message.branch}${message.steam_branch_string}${message.number}`n`r<b>Changelist</b> - \$change${message.shelve}${message.helpString}${message.ping}"
+    message.resultString = "\$emoji\$emoji\$emoji ${message.resultType} \$emoji\$emoji\$emoji `n`r${message.type}${message.platform}${message.target}${message.config}${message.branch}${message.steam_branch_string}${message.number}${message.change}${message.shelve}${message.helpString}${message.ping}"
 
     powershell """
         \$change = "${parameters.change}"
