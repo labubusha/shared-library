@@ -1,3 +1,11 @@
+private def check_bot_items(parameters) {
+    if (parameters.containsKey("bot_token") && parameters.containsKey("chat_id")) {
+        return true
+    } else {
+        return false
+    }
+}
+
 private def check_param(parameters, key) {
     if (parameters.containsKey(key) && parameters[key] != "") {
         return true
@@ -7,7 +15,7 @@ private def check_param(parameters, key) {
 }
 
 def bot_send_message(Map parameters, result) {
-    if (!(check_param(parameters,"change") && check_param(parameters, "bot_token") && check_param(parameters, "chat_id") && parameters.containsKey("status"))) {
+    if (!(check_param(parameters,"change") && check_bot_items(parameters) && parameters.containsKey("status"))) {
         echo "Error! Missing required parameters — change, bot_token, chat_id. Also required (can be empty): status."
         return 
     }
