@@ -103,7 +103,7 @@ def bot_send_message(Map parameters, result) {
             
 }
 
-private send_log_bat(main_items, logFileName, Boolean get7z = false) {
+private def send_log_bat(main_items, logFileName, Boolean get7z = false) {
     if (!get7z) {
         bat """
             curl -X POST "https://api.telegram.org/bot${main_items.bot_token}/sendDocument" -F chat_id=${main_items.chat_id} -F document="@${logFileName}"
@@ -118,6 +118,10 @@ private send_log_bat(main_items, logFileName, Boolean get7z = false) {
 }
 
 def send_log(main_items, logFileName, Boolean checkFileSize = false) {
+    if (!check_bot_items(main_items)) {
+        echo "Error! Missing required parameters — bot_token, chat_id."
+        return 
+    }
     if (checkFileSize) {
         def fileSizeInBytes = powershell(returnStdout: true, script: "(Get-Item '${logFileName}').Length")
         def fileSize = fileSizeInBytes.toInteger()
@@ -135,6 +139,10 @@ def send_log(main_items, logFileName, Boolean checkFileSize = false) {
 }
 
 def download_log(curl_items, logFileName) {
+    if (!check_bot_items(main_items)) {
+        echo "Error! Missing required parameters — bot_token, chat_id."
+        return 
+    }
     bat """
         url -m 600 -X POST https://${curl_items.user}:${curl_items.token}@${curl_items.jenkins_url}/job/${curl_items.job_name}/${curl_items.build_id}/consoleText > ${logFileName} 2>&1
         exit /b 0
@@ -142,6 +150,10 @@ def download_log(curl_items, logFileName) {
 }
 
 def send_error_message(main_items, htmlMessage) {
+    if (!check_bot_items(main_items)) {
+        echo "Error! Missing required parameters — bot_token, chat_id."
+        return 
+    }
     powershell """
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
         \$botToken = "${main_items.bot_token}"
