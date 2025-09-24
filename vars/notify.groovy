@@ -6,12 +6,40 @@ private def check_param(parameters, key) {
     }
 }
 
+// private def get_messages(result) {
+//     switch (result) {
+//         case 'FAILURE': 
+//             message.emoji = "[char]::ConvertFromUtf32(0x274C)"
+//             message.helpString = " `n`r<b>Failed at step</b> - ${parameters.status}"
+//             message.resultType = "<b>FAILURE</b>"
+//             break
+//         case 'SUCCESS': 
+//             message.emoji = "[char]::ConvertFromUtf32(0x2705)"
+//             message.resultType =  "<b>SUCCESSFUL</b>"
+//             break
+//         case 'ABORTED': 
+//             message.emoji = "[char]::ConvertFromUtf32(0x2716)"
+//             message.resultType =  "<b>ABORTED</b>"
+//             break
+//         case 'FIXED':
+//             message.emoji = "[char]::ConvertFromUtf32(0x2705)"
+//             message.resultType =  "<b>FIXED</b>"
+//             break
+//         case 'REGRESSION': 
+//             message.emoji = "[char]::ConvertFromUtf32(0x274C)"
+//             message.resultType = "<b>REGRESSION</b>"
+//             if (parameters.status != "") {
+//                 message.helpString = " `n`r<b>Failed at step</b> - ${parameters.status}"
+//             }
+//             break
+//     }    
+// }
+
 def bot_send_message(Map parameters, result) {
-    if (!(check_param(parameters,"change") && check_param(parameters, "bot_token") && check_param(parameters, "chat_id"))) {
-        echo "Error! Missing required parameters — change, bot_token, chat_id. "
+    if (!(check_param(parameters,"change") && check_param(parameters, "bot_token") && check_param(parameters, "chat_id") && parameters.containsKey("status"))) {
+        echo "Error! Missing required parameters — change, bot_token, chat_id. Also required (can be empty): status."
         return 
     }
-    println result
     def message = [
         resultString: "", helpString: "", 
         emoji: "", resultType: "", ping: "", number: "", 
@@ -19,33 +47,34 @@ def bot_send_message(Map parameters, result) {
         platform: "", target: "", config: "", branch: ""
     ]
 
-    if ( parameters.containsKey("status") ) {
-        switch (result) {
-            case 'FAILURE': 
-                message.emoji = "[char]::ConvertFromUtf32(0x274C)"
+    switch (result) {
+        case 'FAILURE': 
+            message.emoji = "[char]::ConvertFromUtf32(0x274C)"
+            message.resultType = "<b>FAILURE</b>"
+            if (parameters.status != "") {
                 message.helpString = " `n`r<b>Failed at step</b> - ${parameters.status}"
-                message.resultType = "<b>FAILURE</b>"
-                break
-            case 'SUCCESS': 
-                message.emoji = "[char]::ConvertFromUtf32(0x2705)"
-                message.resultType =  "<b>SUCCESSFUL</b>"
-                break
-            case 'ABORTED': 
-                message.emoji = "[char]::ConvertFromUtf32(0x2716)"
-                message.resultType =  "<b>ABORTED</b>"
-                break
-            case 'FIXED':
-                message.emoji = "[char]::ConvertFromUtf32(0x2705)"
-                message.resultType =  "<b>FIXED</b>"
-                break
-            case 'REGRESSION': 
-                message.emoji = "[char]::ConvertFromUtf32(0x274C)"
-                message.resultType = "<b>REGRESSION</b>"
-                if (parameters.status != "") {
-                    message.helpString = " `n`r<b>Failed at step</b> - ${parameters.status}"
-                }
-                break
-        }    
+            }
+            break
+        case 'SUCCESS': 
+            message.emoji = "[char]::ConvertFromUtf32(0x2705)"
+            message.resultType =  "<b>SUCCESSFUL</b>"
+            break
+        case 'ABORTED': 
+            message.emoji = "[char]::ConvertFromUtf32(0x2716)"
+            message.resultType =  "<b>ABORTED</b>"
+            break
+        case 'FIXED':
+            message.emoji = "[char]::ConvertFromUtf32(0x2705)"
+            message.resultType =  "<b>FIXED</b>"
+            break
+        case 'REGRESSION': 
+            message.emoji = "[char]::ConvertFromUtf32(0x274C)"
+            message.resultType = "<b>REGRESSION</b>"
+            if (parameters.status != "") {
+                message.helpString = " `n`r<b>Failed at step</b> - ${parameters.status}"
+            }
+            break
+        }
     }
 
     if ( parameters.containsKey("type") ) {
