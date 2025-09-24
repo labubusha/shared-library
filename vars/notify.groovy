@@ -115,7 +115,7 @@ private def send_log_bat(main_items, logFileName, Boolean get7z = false) {
         """
     } else {
          bat """
-            "C:\\Program Files\\7-Zip\\7z.exe" a -t7z ${logFileName}.7z ${logFileName}
+            "C:\\Program Files\\7-Zip\\7z.exe" a -t7z ${logFileName.replace(".txt","")}.7z ${logFileName}
             curl -X POST "https://api.telegram.org/bot${main_items.bot_token}/sendDocument" -F chat_id=${main_items.chat_id} -F document="@${logFileName}.7z"
         """
     }
