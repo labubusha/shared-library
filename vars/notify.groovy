@@ -74,7 +74,6 @@ def bot_send_message(Map parameters, result) {
                 message.helpString = " `n`r<b>Failed at step</b> - ${parameters.status}"
             }
             break
-        }
     }
 
     if ( parameters.containsKey("type") ) {
