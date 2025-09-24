@@ -131,7 +131,7 @@ def send_log(main_items, logFileName, Boolean checkFileSize = false) {
         def fileSizeInBytes = powershell(returnStdout: true, script: "(Get-Item '${logFileName}').Length")
         def fileSize = fileSizeInBytes.toInteger()
         def fileSizeInMB = fileSize / (1024 * 1024)
-        if (fileSizeInMB < 30)
+        if (fileSizeInMB < 25)
         {
             send_log_bat(main_items, logFileName)
         } else {
