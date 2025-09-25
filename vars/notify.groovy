@@ -173,7 +173,8 @@ def send_error_message(main_items, htmlMessage) {
         \$botToken = "${main_items.bot_token}"
         \$chatId = "${main_items.chat_id}"
         \$encodedMessage = [uri]::EscapeDataString('${htmlMessage}')
-        \$uri = "https://api.telegram.org/bot\$botToken/sendMessage?chat_id=\$chatId&text=<pre>\$encodedMessage</pre>&parse_mode=HTML"
+        \$uri = "https://api.telegram.org/bot\$botToken/sendMessage?chat_id=\$chatId&text=\$encodedMessage&parse_mode=HTML"
+        Write-Host \$uri
         \$Response = Invoke-RestMethod -Uri \$uri -Method Get
         Start-Sleep -Seconds 1
     """
