@@ -167,6 +167,7 @@ def send_error_message(main_items, htmlMessage) {
         echo "Error! Missing required parameters — bot_token, chat_id."
         return 
     }
+    println htmlMessage
     powershell """
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
         \$botToken = "${main_items.bot_token}"
