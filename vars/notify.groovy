@@ -24,7 +24,7 @@ def bot_send_message(Map parameters, result) {
         emoji: "", resultType: "", ping: "", number: "", 
         steam_branch_string: "", type: "", shelve: "", 
         platform: "", target: "", config: "", branch: "",
-        change: "", map: ""
+        change: "", map: "", revisionRange: ""
     ]
 
     switch (result) {
@@ -100,7 +100,11 @@ def bot_send_message(Map parameters, result) {
         message.map = "`n`r<b>Maps</b> - ${parameters.map} `n`r"
     }
 
-    message.resultString = "\$emoji\$emoji\$emoji ${message.resultType} \$emoji\$emoji\$emoji `n`r${message.type}${message.map}${message.platform}${message.target}${message.config}${message.branch}${message.steam_branch_string}${message.number}${message.change}${message.shelve}${message.helpString}${message.ping}"
+    if ( parameters.containsKey("revisionRange") ) {
+        message.revisionRange = "`n`rCrash between CL${parameters.revisionRange[0]} and CL${parameters.revisionRange[1]}"
+    }
+
+    message.resultString = "\$emoji\$emoji\$emoji ${message.resultType} \$emoji\$emoji\$emoji `n`r${message.type}${message.map}${message.platform}${message.target}${message.config}${message.branch}${message.steam_branch_string}${message.number}${message.change}${message.revisionRange}${message.shelve}${message.helpString}${message.ping}"
 
     powershell """
         \$change = "${parameters.change}"
