@@ -24,7 +24,7 @@ def bot_send_message(Map parameters, result) {
         emoji: "", resultType: "", ping: "", number: "", 
         steam_branch_string: "", type: "", shelve: "", 
         platform: "", target: "", config: "", branch: "",
-        change: ""
+        change: "", map: ""
     ]
 
     switch (result) {
@@ -96,7 +96,11 @@ def bot_send_message(Map parameters, result) {
         message.ping = " `n`r@${parameters.ping}"
     }
 
-    message.resultString = "\$emoji\$emoji\$emoji ${message.resultType} \$emoji\$emoji\$emoji `n`r${message.type}${message.platform}${message.target}${message.config}${message.branch}${message.steam_branch_string}${message.number}${message.change}${message.shelve}${message.helpString}${message.ping}"
+    if ( parameters.containsKey("map") ) {
+        message.map = "`n`r<b>Maps</b> - ${parameters.map} `n`r"
+    }
+
+    message.resultString = "\$emoji\$emoji\$emoji ${message.resultType} \$emoji\$emoji\$emoji `n`r${message.type}${message.map}${message.platform}${message.target}${message.config}${message.branch}${message.steam_branch_string}${message.number}${message.change}${message.shelve}${message.helpString}${message.ping}"
 
     powershell """
         \$change = "${parameters.change}"
