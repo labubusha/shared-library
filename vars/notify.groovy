@@ -172,7 +172,7 @@ def send_error_message(main_items, htmlMessage) {
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
         \$botToken = "${main_items.bot_token}"
         \$chatId = "${main_items.chat_id}"
-        \$encodedMessage = [uri]::EscapeDataString('${htmlMessage}')
+        \$encodedMessage = [uri]::EscapeDataString('<pre>${htmlMessage}</pre>')
         \$uri = "https://api.telegram.org/bot\$botToken/sendMessage?chat_id=\$chatId&text=\$encodedMessage&parse_mode=HTML"
         \$Response = Invoke-RestMethod -Uri \$uri -Method Get
         Start-Sleep -Seconds 1
