@@ -121,6 +121,7 @@ private def zip_file(fileName) {
     ZipOutputStream zipFile = new ZipOutputStream(new FileOutputStream(zipFileName))  
     new File(inputDir).eachFile() { file -> 
     //check if file
+    println file
     if (file.isFile()){
         zipFile.putNextEntry(new ZipEntry(file.name))
         def buffer = new byte[file.size()]  
