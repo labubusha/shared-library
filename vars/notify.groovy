@@ -156,7 +156,7 @@ def send_log(main_items, logFileName, Boolean checkFileSize = false) {
 }
 
 def download_log(curl_items, logFileName) {
-    if (!check_bot_items(main_items)) {
+    if (!check_bot_items(curl_items)) {
         echo "Error! Missing required parameters — bot_token, chat_id."
         return 
     }
