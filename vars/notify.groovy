@@ -1,3 +1,5 @@
+import java.util.zip.*
+
 private def check_bot_items(parameters) {
     if (parameters.containsKey("bot_token") && parameters.containsKey("chat_id")) {
         return true
@@ -5,14 +7,6 @@ private def check_bot_items(parameters) {
         return false
     }
 }
-
-// private def check_param(parameters, key) {
-//     if (parameters.containsKey(key) && parameters[key] != "") {
-//         return true
-//     } else {
-//         return false
-//     }
-// }
 
 def bot_send_message(Map parameters, result) {
     if (!(check_bot_items(parameters) && parameters.containsKey("status"))) {
@@ -53,6 +47,10 @@ def bot_send_message(Map parameters, result) {
             if (parameters.status != "") {
                 message.helpString = " `n`r<b>Failed at step</b> - ${parameters.status}"
             }
+            break
+        case 'PARTIAL SUCCESS':
+            message.emoji = "[char]::ConvertFromUtf32(0x26A0)"
+            message.resultType = "<b>PARTIAL SUCCESS</b>"
             break
     }
 
@@ -116,12 +114,32 @@ def bot_send_message(Map parameters, result) {
             
 }
 
+private def zip_file(fileName) {
+    String zipFileName = "${fileName.replace(".txt","")}.zip"  
+    String inputDir = "logs"
+  
+    ZipOutputStream zipFile = new ZipOutputStream(new FileOutputStream(zipFileName))  
+    new File(inputDir).eachFile() { file -> 
+    //check if file
+    if (file.isFile()){
+        zipFile.putNextEntry(new ZipEntry(file.name))
+        def buffer = new byte[file.size()]  
+        file.withInputStream { 
+        zipFile.write(buffer, 0, it.read(buffer))  
+        }  
+        zipFile.closeEntry()
+    }
+    }  
+    zipFile.close()  
+}
+
 private def send_log_bat(main_items, logFileName, Boolean get7z = false) {
     if (!get7z) {
         bat """
             curl -X POST "https://api.telegram.org/bot${main_items.bot_token}/sendDocument" -F chat_id=${main_items.chat_id} -F document="@${logFileName}"
         """
     } else {
+        zip_file(logFileName)
          bat """
             "C:\\Program Files\\7-Zip\\7z.exe" a -t7z ${logFileName.replace(".txt","")}.7z ${logFileName}
             curl -X POST "https://api.telegram.org/bot${main_items.bot_token}/sendDocument" -F chat_id=${main_items.chat_id} -F document="@${logFileName.replace(".txt","")}.7z"
