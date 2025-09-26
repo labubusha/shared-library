@@ -54,6 +54,10 @@ def bot_send_message(Map parameters, result) {
                 message.helpString = " `n`r<b>Failed at step</b> - ${parameters.status}"
             }
             break
+        case 'PARTIAL SUCCESS':
+            message.emoji = "[char]::ConvertFromUtf32(0x26A0)"
+            message.resultType = "<b>PARTIAL SUCCESS</b>"
+            break
     }
 
     if ( parameters.containsKey("type") ) {
