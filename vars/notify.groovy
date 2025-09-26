@@ -115,7 +115,7 @@ def bot_send_message(Map parameters, result) {
 }
 
 private def zip_file(fileName) {
-    String zipFileName = "${fileName.replace(".txt","")}.zip"  
+    String zipFileName = "${fileName}"  
     String inputDir = "logs"
   
     ZipOutputStream zipFile = new ZipOutputStream(new FileOutputStream(zipFileName))  
