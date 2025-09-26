@@ -115,23 +115,20 @@ def bot_send_message(Map parameters, result) {
 }
 
 private def zip_file(fileName) {
-    String zipFileName = "${fileName}"  
-    String inputDir = "logs"
-  
-    ZipOutputStream zipFile = new ZipOutputStream(new FileOutputStream(zipFileName))  
-    new File(inputDir).eachFile() { file -> 
-    //check if file
-    println file
-    if (file.isFile()){
-        zipFile.putNextEntry(new ZipEntry(file.name))
-        def buffer = new byte[file.size()]  
-        file.withInputStream { 
-        zipFile.write(buffer, 0, it.read(buffer))  
-        }  
-        zipFile.closeEntry()
-    }
-    }  
-    zipFile.close()  
+    String zipFileName = "${fileName.replace(".txt","")}.zip"  
+    String fileToZip = fileName
+    String fileContent = "This is the content of my document."
+
+    new FileOutputStream(zipFileName).withCloseable { fos ->
+        new ZipOutputStream(fos).withCloseable { zos ->
+            ZipEntry entry = new ZipEntry(fileToZip)
+            zos.putNextEntry(entry)
+            zos.write(fileContent.bytes)
+            zos.closeEntry()
+        }
+}
+
+println "ZIP file '$zipFileName' created successfully."
 }
 
 private def send_log_bat(main_items, logFileName, Boolean get7z = false) {
