@@ -141,8 +141,7 @@ private def zip_file(fileName, path) {
     // zipFile.close()  
     def sourceDir = new File("${path}\\${fileName}")
     println "Create sourceDir: ${sourceDir}"
-    def zipFile = new File("C:/Documents/log/${fileName.replace(".log","")}.zip")
-    zipFile.createNewFile()
+    def zipFile = new File("C:\\Users\\log\\${fileName.replace(".log","")}.zip")
     println "Create zipFile: ${zipFile}"
 
     zipFile.withOutputStream { os ->
