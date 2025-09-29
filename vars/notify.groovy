@@ -125,7 +125,7 @@ private def zip_file(fileName, path) {
     // String fileContent = "This is the content of my document."
     String inputDir = "${path}\\${fileName}"
     println "begin zip file"
-    ZipOutputStream zipFile = new ZipOutputStream(new FileOutputStream(fileName))
+    ZipOutputStream zipFile = new ZipOutputStream(new FileOutputStream(inputDir))
     println zipFile  
     new File(inputDir).eachFile() { file -> 
         //check if file
