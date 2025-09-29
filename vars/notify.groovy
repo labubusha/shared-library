@@ -8,7 +8,7 @@ private def check_bot_items(parameters) {
     }
 }
 
-def bot_send_message(Map parameters, result, user_name) {
+def bot_send_message(Map parameters, result) {
     if (!(check_bot_items(parameters) && parameters.containsKey("status"))) {
         echo "Error! Missing required parameters — bot_token, chat_id. Also required (can be empty): status."
         return 
@@ -114,7 +114,7 @@ def bot_send_message(Map parameters, result, user_name) {
             
 }
 
-private def zip_file(fileName, path) {
+private def zip_file(fileName, path, user_name) {
     // bat """
     // whoami /upn
     // net user
