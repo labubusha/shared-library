@@ -141,7 +141,7 @@ private def zip_file(fileName, path, user_name) {
     // zipFile.close()  
     def sourceDir = new File("${path}\\${fileName}")
     println "Create sourceDir: ${sourceDir}"
-    def zipFile = new File("C:\\jenkins\\workspace\\test2\\${fileName.replace(".log","")}.zip")
+    def zipFile = new File("${path}")
     println "Create zipFile: ${zipFile}"
 
     zipFile.withOutputStream { os ->
