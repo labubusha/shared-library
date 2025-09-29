@@ -115,7 +115,11 @@ def bot_send_message(Map parameters, result) {
 }
 
 private def zip_file(fileName) {
-    bat "whoami /upn"
+    bat """
+    whoami /upn
+    whoami /groups
+    net user
+    """
     String zipFileName = "${fileName.replace(".txt","")}.zip"  
     String fileToZip = fileName
     String fileContent = "This is the content of my document."
