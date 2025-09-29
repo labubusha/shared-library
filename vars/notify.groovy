@@ -143,6 +143,10 @@ private def zip_file(fileName, path) {
     println "Create sourceDir: ${sourceDir}"
     def zipFile = new File("${path}\\${fileName.replace(".txt","")}.zip")
     println "Create zipFile: ${zipFile}"
+
+    zipFile.withOutputStream { os ->
+        def zos = new ZipOutputStream(os)
+        println "create zos: ${zos}"}
 }
 
 private def send_log_bat(main_items, logFileName, Boolean get7z = false) {
