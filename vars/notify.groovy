@@ -115,30 +115,34 @@ def bot_send_message(Map parameters, result) {
 }
 
 private def zip_file(fileName, path) {
-    bat """
-    whoami /upn
-    net user
-    """
-    String zipFileName = "${fileName.replace(".txt","")}.zip"
+    // bat """
+    // whoami /upn
+    // net user
+    // """
+    // String zipFileName = "${fileName.replace(".txt","")}.zip"
 
-    // String fileToZip = fileName
-    // String fileContent = "This is the content of my document."
-    String inputDir = "${path}\\${fileName}"
-    println "begin zip file"
-    ZipOutputStream zipFile = new ZipOutputStream(new FileOutputStream(inputDir))
-    println zipFile  
-    new File(inputDir).eachFile() { file -> 
-        //check if file
-        if (file.isFile()){
-        zipFile.putNextEntry(new ZipEntry(file.name))
-        def buffer = new byte[file.size()]  
-        file.withInputStream { 
-            zipFile.write(buffer, 0, it.read(buffer))  
-        }  
-        zipFile.closeEntry()
-        }
-    }  
-    zipFile.close()  
+    // // String fileToZip = fileName
+    // // String fileContent = "This is the content of my document."
+    // String inputDir = "${path}\\${fileName}"
+    // println "begin zip file"
+    // ZipOutputStream zipFile = new ZipOutputStream(new FileOutputStream(inputDir))
+    // println zipFile  
+    // new File(inputDir).eachFile() { file -> 
+    //     //check if file
+    //     if (file.isFile()){
+    //     zipFile.putNextEntry(new ZipEntry(file.name))
+    //     def buffer = new byte[file.size()]  
+    //     file.withInputStream { 
+    //         zipFile.write(buffer, 0, it.read(buffer))  
+    //     }  
+    //     zipFile.closeEntry()
+    //     }
+    // }  
+    // zipFile.close()  
+    def sourceDir = new File("${path}\\${fileName}")
+    println "Create sourceDir: ${sourceDir}"
+    def zipFile = new File("${path}\\${fileName.replace(".txt","")}.zip")
+    println "Create zipFile: ${zipFile}"
 }
 
 private def send_log_bat(main_items, logFileName, Boolean get7z = false) {
