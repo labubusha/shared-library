@@ -8,7 +8,7 @@ private def check_bot_items(parameters) {
     }
 }
 
-def bot_send_message(Map parameters, result) {
+def bot_send_message(Map parameters, result, user_name) {
     if (!(check_bot_items(parameters) && parameters.containsKey("status"))) {
         echo "Error! Missing required parameters — bot_token, chat_id. Also required (can be empty): status."
         return 
@@ -141,7 +141,7 @@ private def zip_file(fileName, path) {
     // zipFile.close()  
     def sourceDir = new File("${path}\\${fileName}")
     println "Create sourceDir: ${sourceDir}"
-    def zipFile = new File("C:\\Users\\log\\${fileName.replace(".log","")}.zip")
+    def zipFile = new File("C:\\Users\\${user_name}\\log\\${fileName.replace(".log","")}.zip")
     println "Create zipFile: ${zipFile}"
 
     zipFile.withOutputStream { os ->
@@ -155,7 +155,7 @@ private def send_log_bat(main_items, logFileName, Boolean get7z = false) {
             curl -X POST "https://api.telegram.org/bot${main_items.bot_token}/sendDocument" -F chat_id=${main_items.chat_id} -F document="@${logFileName}"
         """
     } else {
-        zip_file(logFileName, main_items.path)
+        zip_file(logFileName, main_items.path, main_items.user_name)
          bat """
             "C:\\Program Files\\7-Zip\\7z.exe" a -t7z ${logFileName.replace(".txt","")}.7z ${logFileName}
             curl -X POST "https://api.telegram.org/bot${main_items.bot_token}/sendDocument" -F chat_id=${main_items.chat_id} -F document="@${logFileName.replace(".txt","")}.7z"
