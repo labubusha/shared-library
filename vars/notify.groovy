@@ -151,7 +151,7 @@ private def send_log_bat(main_items, logFileName, path, Boolean get7z = false) {
     
 }
 
-def send_log(main_items, logFileName, Boolean checkFileSize = false) {
+def send_log(main_items, logFileName, path, Boolean checkFileSize = false) {
     if (!check_bot_items(main_items)) {
         echo "Error! Missing required parameters — bot_token, chat_id."
         return 
@@ -164,7 +164,7 @@ def send_log(main_items, logFileName, Boolean checkFileSize = false) {
         {
             send_log_bat(main_items, logFileName)
         } else {
-            send_log_bat(main_items, logFileName, true)
+            send_log_bat(main_items, logFileName, path, true)
         }
     } else {
         send_log_bat(main_items, logFileName)
