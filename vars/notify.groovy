@@ -117,32 +117,37 @@ def bot_send_message(Map parameters, result) {
 private def zip_file(fileName, path) {
     bat """
     whoami /upn
-    whoami /groups /fo > ${path}\\table.txt
     net user
     """
-    String zipFileName = "${fileName.replace(".txt","")}.zip"  
-    String fileToZip = fileName
-    String fileContent = "This is the content of my document."
+    String zipFileName = "${fileName.replace(".txt","")}.zip"
 
-    new FileOutputStream(zipFileName).withCloseable { fos ->
-        new ZipOutputStream(fos).withCloseable { zos ->
-            ZipEntry entry = new ZipEntry(fileToZip)
-            zos.putNextEntry(entry)
-            zos.write(fileContent.bytes)
-            zos.closeEntry()
+    // String fileToZip = fileName
+    // String fileContent = "This is the content of my document."
+    String inputDir = "${path}\\${fileName}"
+    println "begin zip file"
+    ZipOutputStream zipFile = new ZipOutputStream(new FileOutputStream(zipFileName))
+    println zipFile  
+    new File(inputDir).eachFile() { file -> 
+        //check if file
+        if (file.isFile()){
+        zipFile.putNextEntry(new ZipEntry(file.name))
+        def buffer = new byte[file.size()]  
+        file.withInputStream { 
+            zipFile.write(buffer, 0, it.read(buffer))  
+        }  
+        zipFile.closeEntry()
         }
+    }  
+    zipFile.close()  
 }
 
-println "ZIP file '$zipFileName' created successfully."
-}
-
-private def send_log_bat(main_items, logFileName, path, Boolean get7z = false) {
+private def send_log_bat(main_items, logFileName, Boolean get7z = false) {
     if (!get7z) {
         bat """
             curl -X POST "https://api.telegram.org/bot${main_items.bot_token}/sendDocument" -F chat_id=${main_items.chat_id} -F document="@${logFileName}"
         """
     } else {
-        zip_file(logFileName, path)
+        zip_file(logFileName, main_items.path)
          bat """
             "C:\\Program Files\\7-Zip\\7z.exe" a -t7z ${logFileName.replace(".txt","")}.7z ${logFileName}
             curl -X POST "https://api.telegram.org/bot${main_items.bot_token}/sendDocument" -F chat_id=${main_items.chat_id} -F document="@${logFileName.replace(".txt","")}.7z"
@@ -151,7 +156,7 @@ private def send_log_bat(main_items, logFileName, path, Boolean get7z = false) {
     
 }
 
-def send_log(main_items, logFileName, path, Boolean checkFileSize = false) {
+def send_log(main_items, logFileName, Boolean checkFileSize = false) {
     if (!check_bot_items(main_items)) {
         echo "Error! Missing required parameters — bot_token, chat_id."
         return 
@@ -164,7 +169,7 @@ def send_log(main_items, logFileName, path, Boolean checkFileSize = false) {
         {
             send_log_bat(main_items, logFileName)
         } else {
-            send_log_bat(main_items, logFileName, path, true)
+            send_log_bat(main_items, logFileName, true)
         }
     } else {
         send_log_bat(main_items, logFileName)
