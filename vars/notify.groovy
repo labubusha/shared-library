@@ -6,6 +6,14 @@ private def check_bot_items(parameters) {
     }
 }
 
+private def check_item(params, key) {
+    if (parameters.containsKey(key)) {
+        return true
+    } else {
+        return false
+    }
+}
+
 def bot_send_message(Map parameters, result) {
     if (!(check_bot_items(parameters))) {
         echo "Error! Missing required parameters — bot_token, chat_id."
@@ -158,12 +166,12 @@ def send_log(main_items, logFileName, Boolean checkFileSize = false) {
 }
 
 def download_log(main_items, logFileName) {
-    if (!check_bot_items(main_items)) {
-        echo "Error! Missing required parameters — bot_token, chat_id."
+    if (!(check_item("user") && check_item("token") && check_item("jenkins_url") && check_item("job_name") && check_item("build_id"))) {
+        echo "Error! Missing required parameters — user, token, jenkins_url, job_name, build_id."
         return 
     }
     bat """
-        url -m 600 -X POST https://${main_items.user}:${main_items.token}@${main_items.jenkins_url}/job/${main_items.job_name}/${main_items.build_id}/consoleText > ${logFileName} 2>&1
+        сurl -m 600 -X POST https://${main_items.user}:${main_items.token}@${main_items.jenkins_url}/job/${main_items.job_name}/${main_items.build_id}/consoleText > ${logFileName} 2>&1
         exit /b 0
     """
 }
