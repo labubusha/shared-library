@@ -171,8 +171,7 @@ def download_log(main_items, logFileName) {
         return 
     }
     bat """
-        "C:\\Windows\\System32\\curl.exe"
-        сurl -m 600 -X POST https://${main_items.user}:${main_items.token}@${main_items.jenkins_url}/job/${main_items.job_name}/${main_items.build_id}/consoleText > ${logFileName} 2>&1
+        curl -m 600 -X POST https://${main_items.user}:${main_items.token}@${main_items.jenkins_url}/job/${main_items.job_name}/${main_items.build_id}/consoleText > ${logFileName} 2>&1
         exit /b 0
     """
 }
