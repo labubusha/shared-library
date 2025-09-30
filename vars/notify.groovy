@@ -119,7 +119,7 @@ private def get_7z_filename(logFileName) {
     }
     if (logFileName.contains(".log")) {
         println logFileName.replace(".log","")
-            return logFileName.replace(".log","")
+        return logFileName.replace(".log","")
     }
 }
 
