@@ -6,8 +6,8 @@ private def check_bot_items(parameters) {
     }
 }
 
-private def check_item(params, key) {
-    if (parameters.containsKey(key)) {
+private def check_item(params) {
+    if (params.containsKey("user") && params.containsKey("token") && params.containsKey("jenkins_url") && params.containsKey("job_name") && params.containsKey("build_id")) {
         return true
     } else {
         return false
@@ -166,7 +166,7 @@ def send_log(main_items, logFileName, Boolean checkFileSize = false) {
 }
 
 def download_log(main_items, logFileName) {
-    if (!(check_item("user") && check_item("token") && check_item("jenkins_url") && check_item("job_name") && check_item("build_id"))) {
+    if (!(check_item(main_items))) {
         echo "Error! Missing required parameters — user, token, jenkins_url, job_name, build_id."
         return 
     }
