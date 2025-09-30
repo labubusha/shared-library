@@ -117,6 +117,7 @@ private def get_7z_filename(logFileName) {
         case logFileName.contains("txt"):
             return logFileName.replace(".txt","")
         case logFileName.contains("log"):
+            println logFileName.replace(".log","")
             return logFileName.replace(".log","")
     }
 }
@@ -128,6 +129,7 @@ private def send_log_bat(main_items, logFileName, Boolean get7z = false) {
         """
     } else {
         def newFileName = get_7z_filename(logFileName)
+        println newFileName 
          bat """
             "C:\\Program Files\\7-Zip\\7z.exe" a -t7z ${newFileName}.7z ${logFileName}
             curl -X POST "https://api.telegram.org/bot${main_items.bot_token}/sendDocument" -F chat_id=${main_items.chat_id} -F document="@${newFileName}.7z"
