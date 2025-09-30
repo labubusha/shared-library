@@ -113,6 +113,7 @@ def bot_send_message(Map parameters, result) {
 }
 
 private def get_7z_filename(logFileName) {
+    println logFileName
     switch (logFileName) {
         case logFileName.contains("txt"):
             return logFileName.replace(".txt","")
