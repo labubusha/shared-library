@@ -6,14 +6,6 @@ private def check_bot_items(parameters) {
     }
 }
 
-// private def check_param(parameters, key) {
-//     if (parameters.containsKey(key) && parameters[key] != "") {
-//         return true
-//     } else {
-//         return false
-//     }
-// }
-
 def bot_send_message(Map parameters, result) {
     if (!(check_bot_items(parameters) && parameters.containsKey("status"))) {
         echo "Error! Missing required parameters — bot_token, chat_id. Also required (can be empty): status."
@@ -120,15 +112,25 @@ def bot_send_message(Map parameters, result) {
             
 }
 
+private def get_7z_filename(logFileName) {
+    switch (logFileName) {
+        case logFileName.contains("txt"):
+            return logFileName.replace(".txt","")
+        case logFileName.contains("log"):
+            return logFileName.replace(".log","")
+    }
+}
+
 private def send_log_bat(main_items, logFileName, Boolean get7z = false) {
     if (!get7z) {
         bat """
             curl -X POST "https://api.telegram.org/bot${main_items.bot_token}/sendDocument" -F chat_id=${main_items.chat_id} -F document="@${logFileName}"
         """
     } else {
+        def newFileName = get_7z_filename(logFileName)
          bat """
-            "C:\\Program Files\\7-Zip\\7z.exe" a -t7z ${logFileName.replace(".txt","")}.7z ${logFileName}
-            curl -X POST "https://api.telegram.org/bot${main_items.bot_token}/sendDocument" -F chat_id=${main_items.chat_id} -F document="@${logFileName.replace(".txt","")}.7z"
+            "C:\\Program Files\\7-Zip\\7z.exe" a -t7z ${newFileName}.7z ${logFileName}
+            curl -X POST "https://api.telegram.org/bot${main_items.bot_token}/sendDocument" -F chat_id=${main_items.chat_id} -F document="@${newFileName}.7z"
         """
     }
     
