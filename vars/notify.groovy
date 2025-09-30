@@ -157,13 +157,13 @@ def send_log(main_items, logFileName, Boolean checkFileSize = false) {
     
 }
 
-def download_log(curl_items, logFileName) {
-    if (!check_bot_items(curl_items)) {
+def download_log(main_items, logFileName) {
+    if (!check_bot_items(main_items)) {
         echo "Error! Missing required parameters — bot_token, chat_id."
         return 
     }
     bat """
-        url -m 600 -X POST https://${curl_items.user}:${curl_items.token}@${curl_items.jenkins_url}/job/${curl_items.job_name}/${curl_items.build_id}/consoleText > ${logFileName} 2>&1
+        url -m 600 -X POST https://${main_items.user}:${main_items.token}@${main_items.jenkins_url}/job/${main_items.job_name}/${main_items.build_id}/consoleText > ${logFileName} 2>&1
         exit /b 0
     """
 }
