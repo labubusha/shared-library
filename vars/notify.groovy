@@ -7,8 +7,8 @@ private def check_bot_items(parameters) {
 }
 
 def bot_send_message(Map parameters, result) {
-    if (!(check_bot_items(parameters) && parameters.containsKey("status"))) {
-        echo "Error! Missing required parameters — bot_token, chat_id. Also required (can be empty): status."
+    if (!(check_bot_items(parameters))) {
+        echo "Error! Missing required parameters — bot_token, chat_id."
         return 
     }
     def message = [
@@ -23,7 +23,7 @@ def bot_send_message(Map parameters, result) {
         case 'FAILURE': 
             message.emoji = "[char]::ConvertFromUtf32(0x274C)"
             message.resultType = "<b>FAILURE</b>"
-            if (parameters.status != "") {
+            if (parameters.containsKey("status")) {
                 message.helpString = " `n`r<b>Failed at step</b> - ${parameters.status}"
             }
             break
@@ -42,7 +42,7 @@ def bot_send_message(Map parameters, result) {
         case 'REGRESSION': 
             message.emoji = "[char]::ConvertFromUtf32(0x274C)"
             message.resultType = "<b>REGRESSION</b>"
-            if (parameters.status != "") {
+            if (parameters.containsKey("status")) {
                 message.helpString = " `n`r<b>Failed at step</b> - ${parameters.status}"
             }
             break
