@@ -24,7 +24,8 @@ def bot_send_message(Map parameters, result) {
         emoji: "", resultType: "", ping: "", number: "", 
         steam_branch_string: "", type: "", shelve: "", 
         platform: "", target: "", config: "", branch: "",
-        change: "", map: "", revisionRange: ""
+        change: "", map: "", revisionRange: "", review: "",
+        rev_user: ""
     ]
 
     switch (result) {
@@ -57,6 +58,16 @@ def bot_send_message(Map parameters, result) {
         case 'PARTIAL SUCCESS':
             message.emoji = "[char]::ConvertFromUtf32(0x26A0)"
             message.resultType = "<b>PARTIAL SUCCESS</b>"
+            break
+        case 'SWARM FAIL':
+            message.emoji = "[char]::ConvertFromUtf32(0x26A0)"
+            message.resultType = "<b>FAILURE</b>"
+            if ( parameters.containsKey("review") && parameters.containsKey("link") ) {
+                message.review = "`n`r<b>Review</b> - <a href='${parameters.link}'>${parameters.review}</a>"
+            } else {
+                echo "Error! Missing required parameters for swarm notify — review, link."
+                return 
+            }
             break
     }
 
@@ -108,10 +119,13 @@ def bot_send_message(Map parameters, result) {
         message.revisionRange = "`n`rCrash between CL${parameters.revisionRange[0]} and CL${parameters.revisionRange[1]}"
     }
 
-    message.resultString = "\$emoji\$emoji\$emoji ${message.resultType} \$emoji\$emoji\$emoji `n`r${message.type}${message.map}${message.platform}${message.target}${message.config}${message.branch}${message.steam_branch_string}${message.number}${message.change}${message.revisionRange}${message.shelve}${message.helpString}${message.ping}"
+    if ( parameters.containsKey("rev_user") ) {
+        message.rev_user = "`n`r<b>P4 user</b> - ${parameters.rev_user}"
+    }
+
+    message.resultString = "\$emoji\$emoji\$emoji ${message.resultType} \$emoji\$emoji\$emoji `n`r${message.type}${message.map}${message.platform}${message.target}${message.config}${message.branch}${message.steam_branch_string}${message.number}${message.change}${message.review}${message.rev_user}${message.revisionRange}${message.shelve}${message.helpString}${message.ping}"
 
     powershell """
-        \$change = "${parameters.change}"
         \$emoji = ${message.emoji}
         \$message = "${message.resultString}"
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
