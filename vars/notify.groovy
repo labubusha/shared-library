@@ -25,7 +25,7 @@ def bot_send_message(Map parameters, result) {
         steam_branch_string: "", type: "", shelve: "", 
         platform: "", target: "", config: "", branch: "",
         change: "", map: "", revisionRange: "", review: "",
-        rev_user: ""
+        rev_user: "", link: ""
     ]
 
     switch (result) {
@@ -123,7 +123,11 @@ def bot_send_message(Map parameters, result) {
         message.rev_user = "`n`r<b>P4 user</b> - ${parameters.rev_user}"
     }
 
-    message.resultString = "\$emoji\$emoji\$emoji ${message.resultType} \$emoji\$emoji\$emoji `n`r${message.type}${message.map}${message.platform}${message.target}${message.config}${message.branch}${message.steam_branch_string}${message.number}${message.change}${message.review}${message.rev_user}${message.revisionRange}${message.shelve}${message.helpString}${message.ping}"
+    if ( parameters.containKey("link") ) {
+        message.link = "`n`r<b>link</b> - ${parameters.link}"
+    }
+
+    message.resultString = "\$emoji\$emoji\$emoji ${message.resultType} \$emoji\$emoji\$emoji `n`r${message.type}${message.map}${message.platform}${message.target}${message.config}${message.branch}${message.steam_branch_string}${message.number}${message.change}${message.review}${message.rev_user}${message.revisionRange}${message.shelve}${message.helpString}${message.ping}${message.link}"
 
     powershell """
         \$emoji = ${message.emoji}
