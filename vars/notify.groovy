@@ -123,7 +123,7 @@ def bot_send_message(Map parameters, result) {
         message.rev_user = "`n`r<b>P4 user</b> - ${parameters.rev_user}"
     }
 
-    if ( parameters.containKey("link") ) {
+    if ( parameters.containsKey("link") ) {
         message.link = "`n`r<b>link</b> - ${parameters.link}"
     }
 
