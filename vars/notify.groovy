@@ -129,12 +129,20 @@ def bot_send_message(Map parameters, result) {
 
     message.resultString = "\$emoji\$emoji\$emoji ${message.resultType} \$emoji\$emoji\$emoji `n`r${message.type}${message.map}${message.platform}${message.target}${message.config}${message.branch}${message.steam_branch_string}${message.number}${message.change}${message.review}${message.rev_user}${message.revisionRange}${message.shelve}${message.helpString}${message.ping}${message.link}"
 
+    def cmd_thread_str = ""
+    def ps_thread_str = ""
+    if ( parameters.containsKey("thread_id") ) {
+        cmd_thread_str = " -F message_thread_id=${parameters.thread_id}"
+        ps_thread_str = "&message_thread_id=${parameters.thread_id}"
+    }
+
+
     powershell """
         \$emoji = ${message.emoji}
         \$message = "${message.resultString}"
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-        \$Response = Invoke-RestMethod -Uri "https://api.telegram.org/bot${parameters.bot_token}/sendMessage?chat_id=${parameters.chat_id}&text=\$(\${message})&parse_mode=HTML"
-    """   
+        \$Response = Invoke-RestMethod -Uri "https://api.telegram.org/bot${parameters.bot_token}/sendMessage?chat_id=${parameters.chat_id}${ps_thread_str}&text=\$(\${message})&parse_mode=HTML"
+    """  
             
 }
 
@@ -148,15 +156,19 @@ private def get_7z_filename(logFileName) {
 }
 
 private def send_log_bat(main_items, logFileName, Boolean get7z = false) {
+    def cmd_thread_str = ""
+    if ( main_items.containsKey("thread_id") ) {
+        cmd_thread_str = " -F message_thread_id=${main_items.thread_id}"
+    }
     if (!get7z) {
         bat """
-            curl -X POST "https://api.telegram.org/bot${main_items.bot_token}/sendDocument" -F chat_id=${main_items.chat_id} -F document="@${logFileName}"
+            curl -X POST "https://api.telegram.org/bot${main_items.bot_token}/sendDocument" -F chat_id=${main_items.chat_id} ${cmd_thread_str} -F document="@${logFileName}"
         """
     } else {
         def newFileName = get_7z_filename(logFileName)
         bat """
             "C:\\Program Files\\7-Zip\\7z.exe" a -t7z ${newFileName}.7z ${logFileName}
-            curl -X POST "https://api.telegram.org/bot${main_items.bot_token}/sendDocument" -F chat_id=${main_items.chat_id} -F document="@${newFileName}.7z"
+            curl -X POST "https://api.telegram.org/bot${main_items.bot_token}/sendDocument" -F chat_id=${main_items.chat_id} ${cmd_thread_str} -F document="@${newFileName}.7z"
         """
     }
     
@@ -180,7 +192,6 @@ def send_log(main_items, logFileName, Boolean checkFileSize = false) {
     } else {
         send_log_bat(main_items, logFileName)
     }
-    
 }
 
 def download_log(main_items, logFileName) {
@@ -199,13 +210,17 @@ def send_error_message(main_items, htmlMessage) {
         echo "Error! Missing required parameters — bot_token, chat_id."
         return 
     }
+    def ps_thread_str = ""
+    if ( main_items.containsKey("thread_id") ) {
+        ps_thread_str = "&message_thread_id=${main_items.thread_id}"
+    }
     println htmlMessage
     powershell """
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
         \$botToken = "${main_items.bot_token}"
         \$chatId = "${main_items.chat_id}"
         \$encodedMessage = [uri]::EscapeDataString('${htmlMessage}')
-        \$uri = "https://api.telegram.org/bot\$botToken/sendMessage?chat_id=\$chatId&text=\$encodedMessage&parse_mode=HTML"
+        \$uri = "https://api.telegram.org/bot\$botToken/sendMessage?chat_id=\$chatId${ps_thread_str}&text=\$encodedMessage&parse_mode=HTML"
         Write-Host \$uri
         \$Response = Invoke-RestMethod -Uri \$uri -Method Get
         Start-Sleep -Seconds 1
